@@ -27,11 +27,3 @@ A split-pane Markdown editor that renders your technical notes into beautiful HT
 * A localized scraping engine designed to parse data directly from your machine.
 
 ---
-
-## 🚀 Getting Started
-
-Because this suite is entirely client-side, there is no Node.js server to spin up, no packages to install, and no build process to wait for.
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/YOUR-USERNAME/pro-dev-tools.git](https://github.com/YOUR-USERNAME/pro-dev-tools.git)
