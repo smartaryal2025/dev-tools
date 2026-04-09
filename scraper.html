@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline Web Scraper - Pro Developer Tools</title>
+<link rel="stylesheet" href="libs/style.css">
+<style>
+    /* Scraper-Specific Styles */
+    .rule-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: var(--surface-light); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
+    .rule-row input, .rule-row select { height: 35px; margin: 0; }
+    .btn-remove-rule { background: var(--color-error); color: white; border: none; border-radius: 4px; padding: 0 10px; height: 35px; cursor: pointer; font-weight: bold; }
+    .btn-add-rule { background: var(--surface-light); color: var(--accent-primary); border: 1px dashed var(--accent-primary); width: 100%; padding: 10px; border-radius: var(--radius-md); cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+    .btn-add-rule:hover { background: rgba(56, 189, 248, 0.1); }
+</style>
+</head>
+<body>
+
+<div class="container" style="max-width: 1500px;">
+
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; gap: 15px;">
+        
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <a href="index.html" class="header-btn" style="text-decoration: none;">⬅ Back to Main Suite</a>
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">🕸️ Offline Data Scraper</span>
+            <a href="scraper-guide.html" style="font-size: 13px; color: var(--accent-primary); text-decoration: none; font-weight: bold;">(❓ Read Guide)</a>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <a href="workspace.html" class="header-btn" style="text-decoration: none;">💻 Code Workspace</a>
+            <a href="editor.html" class="header-btn" style="text-decoration: none;">⚖️ Diff Editor</a>
+            <a href="scraper.html" class="header-btn" style="text-decoration: none;">🕸️ Data Scraper</a>
+	    <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+        </div>
+        
+    </div>
+
+    <div class="grid-layout">
+        
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="panel">
+                <h3 class="text-teal">1. Input Target HTML</h3>
+                <textarea id="scrape-html" class="code-area" style="height: 200px;" placeholder="Paste raw HTML source code here (e.g., <div class='product-list'>...</div>)"></textarea>
+            </div>
+
+            <div class="panel">
+                <h3 class="text-warning">2. Extraction Rules</h3>
+                
+                <label style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">Parent Item Selector (e.g., .product-card)</label>
+                <input type="text" id="parent-selector" class="custom-input mb-15" placeholder="Leave blank to search entire document">
+
+                <div id="rules-container">
+                    </div>
+                
+                <button id="btn-add-rule" class="btn-add-rule">➕ Add Data Field</button>
+                
+                <button id="btn-extract" style="background: var(--color-success); color: var(--surface-dark); width: 100%; height: 45px; border: none; border-radius: var(--radius-md); font-weight: bold; cursor: pointer; font-size: 15px;">🚀 Run Extraction</button>
+            </div>
+        </div>
+
+        <div class="panel" style="height: 100%;">
+            <h3 class="text-accent">3. Extracted Data Output</h3>
+            <textarea id="scrape-output" class="code-area" readonly style="flex-grow: 1; min-height: 400px; margin-bottom: 15px;" placeholder="JSON results will appear here..."></textarea>
+            
+            <div style="display: flex; gap: 10px;">
+                <button id="btn-copy-json" class="copy-btn" style="margin: 0; background: var(--surface-light) !important; color: var(--text-primary) !important; border: 1px solid var(--border-color);">📋 Copy JSON</button>
+                <button id="btn-dl-json" style="background: var(--accent-primary); color: var(--surface-dark); border: none; border-radius: var(--radius-md); flex: 1; cursor: pointer; font-weight: bold;">💾 Download JSON</button>
+                <button id="btn-dl-csv" style="background: var(--color-warning); color: var(--surface-dark); border: none; border-radius: var(--radius-md); flex: 1; cursor: pointer; font-weight: bold;">📊 Download CSV</button>
+            </div>
+            <div id="scrape-log-area" class="log-area" style="margin-top: 15px;"><div>System Ready. DOM Parser loaded.</div></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') {
+        htmlTag.setAttribute('data-theme', 'light');
+        if (themeBtn) themeBtn.textContent = '☀️';
+    }
+
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                htmlTag.removeAttribute('data-theme');
+                localStorage.setItem('app_theme', 'dark');
+                themeBtn.textContent = '🌙';
+            } else {
+                htmlTag.setAttribute('data-theme', 'light');
+                localStorage.setItem('app_theme', 'light');
+                themeBtn.textContent = '☀️';
+            }
+        };
+    }
+</script>
+
+<script src="libs/scraper.js"></script>
+</body>
+</html>

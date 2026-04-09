@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Notes - Pro Developer Tools</title>
+<link rel="stylesheet" href="libs/style.css">
+<script src="libs/marked.min.js"></script>
+<style>
+    /* Bulletproof Full-Screen Layout */
+    html, body { height: 100vh; margin: 0; overflow: hidden; background: var(--bg-end); }
+    .workspace-container { display: flex; flex-direction: column; height: 100vh; padding: 20px; box-sizing: border-box; max-width: 1800px; margin: 0 auto; width: 100%; }
+    
+    .app-header { flex-shrink: 0; }
+    .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: var(--surface-dark); padding: 10px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); flex-shrink: 0; }
+    .toolbar-divider { width: 1px; height: 25px; background: var(--border-color); margin: 0 5px; }
+    
+    /* Split Screen Grid */
+    .notes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        flex-grow: 1;
+        min-height: 0; /* Forces grid to obey screen limits */
+    }
+
+    /* Shared Pane Styles */
+    .note-pane {
+        background: var(--surface-dark);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .pane-header {
+        background: var(--surface-light);
+        padding: 8px 15px;
+        font-size: 13px;
+        font-weight: bold;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+    }
+
+    /* Markdown Editor */
+    #md-editor {
+        flex-grow: 1;
+        width: 100%;
+        resize: none !important;
+        background: var(--bg-start) !important;
+        color: var(--accent-primary) !important;
+        border: none !important;
+        padding: 20px !important;
+        font-family: 'Consolas', 'Courier New', monospace !important;
+        font-size: 15px;
+        line-height: 1.6;
+        outline: none;
+        box-sizing: border-box;
+        overflow-y: auto !important;
+    }
+
+    /* HTML Preview Pane */
+    #md-preview {
+        flex-grow: 1;
+        background: var(--bg-start);
+        padding: 20px;
+        overflow-y: auto;
+        color: var(--text-primary);
+        line-height: 1.6;
+        font-family: inherit;
+    }
+    
+    /* Pretty Markdown Styling */
+    #md-preview h1, #md-preview h2, #md-preview h3 { color: var(--accent-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-top: 0; }
+    #md-preview pre { background: #000; padding: 15px; border-radius: var(--radius-md); overflow-x: auto; border: 1px solid var(--border-color); }
+    #md-preview code { font-family: 'Consolas', monospace; color: var(--color-warning); background: rgba(0,0,0,0.3); padding: 2px 4px; border-radius: 3px; }
+    #md-preview blockquote { border-left: 4px solid var(--accent-primary); margin: 0; padding-left: 15px; color: var(--text-secondary); background: rgba(56, 189, 248, 0.05); padding-top: 5px; padding-bottom: 5px;}
+    #md-preview img { max-width: 100%; border-radius: var(--radius-md); }
+</style>
+</head>
+<body>
+
+<div class="workspace-container">
+
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; margin-top: 0; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <a href="index.html" class="header-btn" style="text-decoration: none; height: 32px; box-sizing: border-box; display: inline-flex; align-items: center;">⬅ Back to Main Suite</a>
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📝 Dev Notes & Documentation</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <a href="workspace.html" class="header-btn" style="text-decoration: none;">💻 Code Workspace</a>
+            <a href="editor.html" class="header-btn" style="text-decoration: none;">⚖️ Diff Editor</a>
+            <a href="scraper.html" class="header-btn" style="text-decoration: none;">🕸️ Data Scraper</a>
+            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+        </div>
+    </div>
+
+    <div class="editor-toolbar">
+        <button id="btn-save" style="background: var(--color-success); color: var(--surface-dark);">💾 Save .md File</button>
+        <button id="btn-copy-html" style="background: var(--accent-primary); color: var(--surface-dark);">📋 Copy as HTML</button>
+        <div class="toolbar-divider"></div>
+        <button id="btn-clear" class="btn-clear" style="border: 1px solid var(--border-color);">🗑️ Clear Note</button>
+        <span style="margin-left: auto; font-size: 13px; color: var(--text-secondary);">Autosaved to LocalStorage ✔️</span>
+    </div>
+
+    <div class="notes-grid">
+        <div class="note-pane">
+            <div class="pane-header">Raw Markdown Input</div>
+            <textarea id="md-editor" spellcheck="false" placeholder="# Write your documentation here...&#10;&#10;Use standard **Markdown** to format your text.&#10;&#10;```javascript&#10;console.log('Code blocks work beautifully!');&#10;```"></textarea>
+        </div>
+        
+        <div class="note-pane">
+            <div class="pane-header">Live HTML Preview</div>
+            <div id="md-preview"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️'; }
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            if (currentTheme === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️'; }
+        };
+    }
+</script>
+
+<script src="libs/notes.js"></script>
+</body>
+</html>

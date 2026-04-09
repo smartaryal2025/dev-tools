@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Workspace - Pro Developer Tools</title>
+<link rel="stylesheet" href="libs/style.css">
+<style>
+    /* 1. Kill global scrolling completely */
+    html, body { 
+        height: 100vh !important; 
+        max-height: 100vh !important;
+        margin: 0; 
+        overflow: hidden !important; 
+        background: var(--bg-end);
+    }
+    
+    /* 2. GRID LAYOUT: Mathematically forces the layout to fit the screen */
+    .workspace-container { 
+        display: grid; 
+        grid-template-rows: auto auto 1fr; /* Header, Toolbar, and Editor space */
+        height: 100vh; 
+        padding: 20px; 
+        box-sizing: border-box; 
+        max-width: 1800px; 
+        margin: 0 auto; 
+        width: 100%; 
+    }
+    
+    /* 3. Toolbar Overrides */
+    .app-header { margin-bottom: 20px !important; }
+    .editor-toolbar { 
+        display: flex; gap: 10px; margin-bottom: 15px; align-items: center; 
+        background: var(--surface-dark); padding: 10px 15px; border-radius: var(--radius-lg); 
+        border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); 
+    }
+    .editor-toolbar button { height: 35px; padding: 0 15px; font-size: 13px; margin: 0; }
+    .toolbar-divider { width: 1px; height: 25px; background: var(--border-color); margin: 0 5px; }
+    
+    /* 4. WRAPPER GRID: Separates Editor from Status Bar */
+    .editor-wrapper { 
+        display: grid;
+        grid-template-rows: 1fr auto; 
+        min-height: 0; /* The secret sauce that forces grid scrolling */
+        border: 1px solid var(--border-color); 
+        border-radius: var(--radius-md); 
+        overflow: hidden; 
+    }
+    
+    /* 5. BODY GRID: Separates Line Numbers from Textarea */
+    .editor-body {
+        display: grid;
+        grid-template-columns: 50px 1fr; /* 50px gutter, the rest is code */
+        min-height: 0; /* Forces boundaries */
+        background: var(--bg-start);
+    }
+    
+    /* 6. Gutter */
+    #line-numbers {
+        background: var(--surface-dark); color: var(--text-secondary); padding: 20px 10px; text-align: right; 
+        font-family: 'Consolas', 'Courier New', monospace; font-size: 15px; line-height: 1.5; user-select: none; 
+        border-right: 1px solid var(--border-color); 
+        overflow-y: hidden; /* We hide the scrollbar here, JS syncs it with the textarea */
+    }
+    
+    /* 7. TEXTAREA: The ONLY thing allowed to scroll */
+    #smart-editor { 
+        width: 100%; height: 100%;
+        resize: none !important; background: transparent !important; color: var(--accent-primary) !important; 
+        border: none !important; padding: 20px 15px !important; 
+        font-family: 'Consolas', 'Courier New', monospace !important; font-size: 15px; line-height: 1.5; 
+        outline: none; box-sizing: border-box; white-space: pre; overflow-wrap: normal; 
+        overflow: auto !important; /* GUARANTEES SCROLLBAR */
+    }
+    
+    /* 8. Status Bar */
+    .status-bar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        background: var(--surface-light); padding: 5px 15px; font-family: monospace; 
+        font-size: 12px; color: var(--text-secondary); 
+        border-top: 1px solid var(--border-color);
+    }
+</style>
+</head>
+<body>
+
+<div class="workspace-container">
+
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; margin-top: 0; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <a href="index.html" class="header-btn" style="text-decoration: none; height: 32px; box-sizing: border-box; display: inline-flex; align-items: center;">⬅ Back to Main Suite</a>
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">💻 Code Editor Workspace</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <a href="workspace.html" class="header-btn" style="text-decoration: none;">💻 Code Workspace</a>
+            <a href="editor.html" class="header-btn" style="text-decoration: none;">⚖️ Diff Editor</a>
+            <a href="scraper.html" class="header-btn" style="text-decoration: none;">🕸️ Data Scraper</a>
+	    <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+        </div>
+    </div>
+
+    <div class="editor-toolbar">
+        <input type="file" id="file-input" class="hidden-input" accept=".js,.css,.html,.txt,.json,.xml">
+        <button id="btn-open" style="background: var(--surface-light); color: var(--text-primary); border: 1px solid var(--border-color);">📂 Open File</button>
+        <button id="btn-save" style="background: var(--color-success); color: var(--surface-dark);">💾 Save (Overwrite)</button>
+        <button id="btn-save-as" style="background: var(--accent-primary); color: var(--surface-dark);">📝 Save As...</button>
+        <div class="toolbar-divider"></div>
+        <button id="btn-copy" class="copy-btn" style="width: auto; margin-top: 0; background: var(--surface-light) !important; color: var(--text-primary) !important; border: 1px solid var(--border-color);">📋 Copy</button>
+        <button id="btn-clear" class="btn-clear" style="border: 1px solid var(--border-color);">🗑️ Clear</button>
+        <div class="toolbar-divider"></div>
+        <button id="btn-font-dec" style="background: var(--surface-light); color: var(--text-primary); border: 1px solid var(--border-color);">A-</button>
+        <button id="btn-font-inc" style="background: var(--surface-light); color: var(--text-primary); border: 1px solid var(--border-color);">A+</button>
+        <span style="margin-left: auto; font-size: 13px; color: var(--color-success);" id="editor-toast"></span>
+    </div>
+
+    <div class="editor-wrapper">
+        <div class="editor-body">
+            <div id="line-numbers">1</div>
+            <textarea id="smart-editor" spellcheck="false" placeholder="// Start coding here..."></textarea>
+        </div>
+        <div class="status-bar">
+            <span id="file-name-display">untitled.txt</span>
+            <span>UTF-8 | <span id="cursor-position">Ln 1, Col 1</span></span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') {
+        htmlTag.setAttribute('data-theme', 'light');
+        if (themeBtn) themeBtn.textContent = '☀️';
+    }
+
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                htmlTag.removeAttribute('data-theme');
+                localStorage.setItem('app_theme', 'dark');
+                themeBtn.textContent = '🌙';
+            } else {
+                htmlTag.setAttribute('data-theme', 'light');
+                localStorage.setItem('app_theme', 'light');
+                themeBtn.textContent = '☀️';
+            }
+        };
+    }
+</script>
+
+<script src="libs/workspace.js"></script>
+</body>
+</html>

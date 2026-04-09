@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Notes Guide - Pro Developer Tools</title>
+<link rel="stylesheet" href="libs/style.css">
+<style>
+    .guide-content { background: var(--surface-dark); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); font-size: 16px; line-height: 1.6; }
+    .guide-content h2 { color: var(--accent-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
+    .guide-content h3 { color: var(--text-primary); margin-top: 25px; }
+    
+    .guide-content pre { background: var(--bg-start); padding: 15px; border-radius: var(--radius-md); overflow-x: auto; border: 1px solid var(--border-color); font-family: 'Consolas', monospace; font-size: 14px; }
+    .guide-content code { font-family: 'Consolas', monospace; color: var(--color-warning); background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 4px; font-size: 14px; }
+    .guide-content pre code { background: transparent; padding: 0; color: var(--text-primary); }
+    
+    .keyboard-key { display: inline-block; background: var(--surface-light); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; color: var(--text-secondary); box-shadow: 0 2px 0 var(--border-color); margin: 0 2px; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; border: 1px solid var(--border-color); text-align: left; }
+    th { background: var(--surface-light); color: var(--text-primary); }
+
+    /* Cheat Sheet Copy Box */
+    .cheat-sheet-box { position: relative; margin-top: 20px; margin-bottom: 30px; }
+    #cheat-sheet-area { width: 100%; height: 350px; background: var(--bg-start); color: var(--accent-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; font-family: monospace; font-size: 14px; resize: vertical; box-sizing: border-box; outline: none; }
+    #btn-copy-cheat { position: absolute; top: 15px; right: 15px; background: var(--color-success); color: var(--text-inverse); height: 35px; padding: 0 15px; border: none; border-radius: var(--radius-md); font-weight: bold; cursor: pointer; transition: 0.2s; }
+    #btn-copy-cheat:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<div class="container" style="max-width: 900px;">
+
+    <div class="app-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px;">
+        <a href="index.html" class="header-btn" style="text-decoration: none; display: flex; align-items: center; height: 32px; box-sizing: border-box;">⬅ Back to Main Suite</a>
+        <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📝 Dev Notes Guide</span>
+        <div style="width: 150px; display: flex; justify-content: flex-end;">
+            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+        </div>
+    </div>
+
+    <div class="guide-content">
+        <h1 style="margin-top: 0; color: var(--text-primary);">Mastering Dev Notes</h1>
+        <p>Dev Notes is a blazing-fast, offline documentation tool. It uses <strong>Markdown</strong> to format text instantly. Type your raw Markdown on the left, and watch it turn into beautiful HTML on the right.</p>
+
+        <h2>⚡ Quick Start: The Cheat Sheet</h2>
+        <p>The fastest way to learn is by doing. Click the <strong>Copy Cheat Sheet</strong> button below, open your Dev Notes tool, and paste it into the left panel to see exactly how everything renders!</p>
+        
+        <div class="cheat-sheet-box">
+            <button id="btn-copy-cheat">📋 Copy Cheat Sheet</button>
+            <textarea id="cheat-sheet-area" spellcheck="false" readonly>
+# Welcome to Dev Notes! 🚀
+This is an `h1` heading. You use hashes to make headings.
+
+## This is an h2
+### This is an h3
+
+---
+
+## 📝 Basic Formatting
+It is incredibly easy to make text **bold**, *italic*, or ***both***.
+You can also use ~~strikethrough~~ if you need to.
+
+## 📋 Lists
+Here is an unordered list of tasks:
+* Build Code Editor
+* Build Data Scraper
+* Build Dev Notes
+
+Here is an ordered list:
+1. Copy this text
+2. Paste it in the left panel
+3. Watch it render on the right!
+
+## 💻 Code Blocks
+You can write inline code like `const x = 10;` or create full, multi-line code blocks for your documentation:
+
+&#96;&#96;&#96;javascript
+function greetUser(name) {
+    console.log(`Hello, ${name}! Your offline suite is awesome.`);
+}
+&#96;&#96;&#96;
+
+## 🔗 Links and Quotes
+Need to save a link? [Click here for the Markdown Guide](https://www.markdownguide.org).
+
+> "This is a blockquote. It's great for emphasizing important notes, warnings, or quotes from documentation."
+            </textarea>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 50px;">
+            <a href="notes.html"><button style="background: var(--accent-primary); color: var(--text-inverse); font-size: 16px; padding: 0 25px; height: 50px; border-radius: var(--radius-md); border: none; font-weight: bold; cursor: pointer;">Launch Dev Notes & Paste It! 🚀</button></a>
+        </div>
+
+        <h2>📖 Syntax Reference Guide</h2>
+        
+        <table>
+            <tr>
+                <th>Element</th>
+                <th>What you type (Markdown)</th>
+                <th>What you get (HTML)</th>
+            </tr>
+            <tr>
+                <td>Headers</td>
+                <td><code># Big Header<br>## Smaller Header</code></td>
+                <td><h1 style="margin:0;">H1</h1><h2 style="margin:0;">H2</h2></td>
+            </tr>
+            <tr>
+                <td>Emphasis</td>
+                <td><code>**Bold text**</code><br><code>*Italic text*</code></td>
+                <td><strong>Bold text</strong><br><em>Italic text</em></td>
+            </tr>
+            <tr>
+                <td>Lists</td>
+                <td><code>- Item 1<br>- Item 2</code></td>
+                <td><ul style="margin:0;"><li style="margin:0;">Item 1</li><li style="margin:0;">Item 2</li></ul></td>
+            </tr>
+            <tr>
+                <td>Links</td>
+                <td><code>[Google](https://google.com)</code></td>
+                <td><a href="#" style="color: var(--accent-primary);">Google</a></td>
+            </tr>
+            <tr>
+                <td>Blockquote</td>
+                <td><code>> This is important!</code></td>
+                <td><blockquote style="margin:0; border-left: 3px solid var(--accent-primary); padding-left: 10px;">This is important!</blockquote></td>
+            </tr>
+        </table>
+
+        <h2>💻 Writing Code Blocks (Important!)</h2>
+        <p>Since you are building a developer suite, you will frequently need to save blocks of code. To do this, you use <strong>triple backticks</strong> (the key usually above the Tab key: <code>`</code>).</p>
+        
+        <h3>Inline Code</h3>
+        <p>For a quick variable name, wrap it in single backticks: <br> <code>`const myVar = 10;`</code> becomes <code>const myVar = 10;</code></p>
+
+        <h3>Multi-line Code Blocks</h3>
+        <p>To write a full block of code, you must explicitly <strong>open</strong> and <strong>close</strong> the block.</p>
+        <ol>
+            <li>Type three backticks followed by the language name (e.g., <code>&#96;&#96;&#96;javascript</code> or <code>&#96;&#96;&#96;html</code>).</li>
+            <li>Press <span class="keyboard-key">Enter</span> and paste your code.</li>
+            <li>Press <span class="keyboard-key">Enter</span> again and type three backticks <code>&#96;&#96;&#96;</code> alone on the final line to <strong>close</strong> the block!</li>
+        </ol>
+
+        <p><strong>Example of a properly closed block:</strong></p>
+<pre><code>&#96;&#96;&#96;javascript
+function calculateTotal(price) {
+    return price * 1.2;
+}
+&#96;&#96;&#96;</code></pre>
+
+        <h2>🛠️ Toolbar & Autosave</h2>
+        <ul>
+            <li><span style="color: var(--color-success); font-weight: bold;">💾 Save .md File:</span> Downloads your raw text exactly as you typed it. Perfect for pushing to GitHub.</li>
+            <li><span style="color: var(--accent-primary); font-weight: bold;">📋 Copy as HTML:</span> Copies the <em>rendered preview</em>. If you paste this into an email or a WordPress blog, it keeps all your bolding, lists, and code blocks perfectly formatted!</li>
+            <li><span style="color: var(--text-primary); font-weight: bold;">✔️ Autosave Vault:</span> Every time you press a key, your progress is saved to your browser's offline <code>localStorage</code>. If you accidentally close the tab, open it again and your text will be waiting for you.</li>
+        </ul>
+
+    </div>
+
+</div>
+
+<script>
+    // Copy Cheat Sheet Logic
+    document.getElementById('btn-copy-cheat').onclick = (e) => {
+        const text = document.getElementById('cheat-sheet-area').value;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = e.target;
+            const orig = btn.innerHTML;
+            btn.innerHTML = "✔✔ Copied! Now Paste It!";
+            setTimeout(() => btn.innerHTML = orig, 2500);
+        });
+    };
+
+    // Theme Memory Logic
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️'; }
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            if (currentTheme === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️'; }
+        };
+    }
+</script>
+</body>
+</html>

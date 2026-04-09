@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scraper Guide - Pro Developer Tools</title>
+<link rel="stylesheet" href="libs/style.css">
+<style>
+    /* Guide-specific typography improvements */
+    .guide-content { line-height: 1.6; font-size: 15px; color: var(--text-primary); }
+    .guide-content h3 { margin-top: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    .guide-content p { margin-bottom: 15px; }
+    .guide-content ul { margin-bottom: 20px; padding-left: 20px; }
+    .guide-content li { margin-bottom: 8px; }
+    .code-badge { background: #000; color: var(--accent-primary); padding: 3px 6px; border-radius: 4px; font-family: monospace; border: 1px solid var(--border-color); font-size: 13px; }
+    .step-box { background: var(--surface-light); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 20px; }
+    
+    .launch-btn-container { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px dashed var(--border-color); }
+    .btn-launch { background: var(--accent-primary); color: var(--surface-dark); font-size: 18px; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-block; transition: transform 0.2s, opacity 0.2s; box-shadow: var(--shadow-soft); }
+    .btn-launch:hover { transform: translateY(-2px); opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<div class="container" style="max-width: 900px;">
+    <div class="app-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px;">
+        <a href="index.html" class="header-btn" style="text-decoration: none; display: flex; align-items: center; height: 32px; box-sizing: border-box;">⬅ Back to Main Suite</a>
+        <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📖 Scraper Documentation</span>
+        <div style="width: 150px; display: flex; justify-content: flex-end;">
+            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+        </div>
+        
+    </div>
+
+    <div class="panel guide-content">
+        <h2 class="text-teal" style="text-align: center; font-size: 28px; margin-bottom: 10px;">How to Use the Offline Web Scraper</h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 40px;">Extract structured JSON or CSV data from any website without writing Python scripts.</p>
+
+        <div class="step-box">
+            <h3 class="text-accent" style="margin-top: 0;">Step 1: Grab the Target HTML</h3>
+            <p>Because this scraper runs offline in your browser, it cannot visit websites for you. You must provide it with the raw HTML code of the data you want to extract.</p>
+            <ul>
+                <li>Go to the webpage you want to scrape.</li>
+                <li><strong>Right-click</strong> near the data (like a grid of products or a list of articles) and select <strong>Inspect</strong>.</li>
+                <li>In the code panel that opens, hover your mouse over the lines of code until the browser highlights the <em>entire area</em> containing your items.</li>
+                <li>Right-click that line of code, select <strong>Copy</strong> ➔ <strong>Copy element</strong> (or <em>Copy OuterHTML</em>).</li>
+                <li>Paste this block of code into the <strong>"Input Target HTML"</strong> box in the Scraper tool.</li>
+            </ul>
+        </div>
+
+        <div class="step-box">
+            <h3 class="text-warning" style="margin-top: 0;">Step 2: Set the Parent Selector (Optional but Recommended)</h3>
+            <p>If you are scraping a list of items (like 10 different laptops on a store page), you need to tell the scraper how to separate them into rows.</p>
+            <ul>
+                <li>Find the CSS class that wraps each individual item.</li>
+                <li>Example: If every laptop is inside a <span class="code-badge">&lt;div class="product-card"&gt;</span>, type <span class="code-badge">.product-card</span> into the Parent Selector box.</li>
+                <li><em>Note: If you leave this blank, the scraper will search the entire HTML block as one single item.</em></li>
+            </ul>
+        </div>
+
+        <div class="step-box">
+            <h3 class="text-success" style="margin-top: 0;">Step 3: Build Your Extraction Rules</h3>
+            <p>Click "Add Data Field" for every specific piece of information you want to pull out of each item. You need three things for a rule:</p>
+            <ul>
+                <li><strong>Field Name:</strong> What you want the column to be called (e.g., <span class="code-badge">Price</span>, <span class="code-badge">Author</span>, <span class="code-badge">Image_URL</span>).</li>
+                <li><strong>CSS Selector:</strong> The exact HTML tag or class holding the data. 
+                    <br><em>Examples:</em> <span class="code-badge">h2</span>, <span class="code-badge">.price-tag</span>, <span class="code-badge">img.thumbnail</span>, <span class="code-badge">a.read-more</span>
+                </li>
+                <li><strong>Data Type:</strong> Choose what part of the element to extract:
+                    <ul>
+                        <li><strong>Text Content:</strong> Grabs the visible words (Best for titles, prices, descriptions).</li>
+                        <li><strong>Link (href):</strong> Grabs the URL from an <span class="code-badge">&lt;a&gt;</span> tag.</li>
+                        <li><strong>Image (src):</strong> Grabs the image link from an <span class="code-badge">&lt;img&gt;</span> tag.</li>
+                        <li><strong>Inner HTML:</strong> Grabs the raw HTML inside the element (Useful if you want to keep bold/italic formatting).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="step-box" style="margin-bottom: 0;">
+            <h3 class="text-danger" style="margin-top: 0;">Step 4: Extract and Export</h3>
+            <p>Once your rules are set, click the big green <strong>🚀 Run Extraction</strong> button.</p>
+            <p>The tool will instantly parse the DOM and output perfectly formatted JSON data. You can then use the buttons below the output box to immediately download the results as a <strong>.json</strong> file or a spreadsheet-ready <strong>.csv</strong> file!</p>
+        </div>
+
+        <div class="launch-btn-container">
+            <a href="scraper.html" class="btn-launch">🚀 Launch the Scraper Tool</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') {
+        htmlTag.setAttribute('data-theme', 'light');
+        if (themeBtn) themeBtn.textContent = '☀️';
+    }
+
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                htmlTag.removeAttribute('data-theme');
+                localStorage.setItem('app_theme', 'dark');
+                themeBtn.textContent = '🌙';
+            } else {
+                htmlTag.setAttribute('data-theme', 'light');
+                localStorage.setItem('app_theme', 'light');
+                themeBtn.textContent = '☀️';
+            }
+        };
+    }
+</script>
+
+</body>
+</html>
