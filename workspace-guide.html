@@ -16,6 +16,7 @@
     th, td { padding: 12px; border: 1px solid var(--border-color); text-align: left; }
     th { background: var(--surface-light); color: var(--text-primary); }
     td code { color: var(--color-warning); font-family: 'Consolas', monospace; font-size: 14px; background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 4px; }
+    .badge { background: var(--accent-primary); color: var(--surface-dark); padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-left: 5px;}
 </style>
 </head>
 <body>
@@ -32,48 +33,98 @@
 
     <div class="guide-content">
         <h1 style="margin-top: 0; color: var(--text-primary);">Mastering the Code Workspace</h1>
-        <p>The Code Workspace is a distraction-free, lightning-fast text editor. While it runs 100% offline in your browser, it is equipped with a custom engine that mimics the most powerful features of desktop IDEs like VS Code.</p>
+        <p>The Code Workspace is a distraction-free, lightning-fast text editor powered by <strong>Microsoft Monaco</strong> (the engine behind VS Code). It runs entirely in your browser but acts like a native desktop application.</p>
 
-        <h2>⌨️ VS Code Power Shortcuts</h2>
-        <p>You don't need to reach for your mouse to manage your code. Use these built-in hotkeys to code faster:</p>
+        <h2>📂 True File Management</h2>
+        <p>This editor uses modern Browser APIs to interact securely with your hard drive, skipping annoying download popups.</p>
         <ul>
-            <li><span class="keyboard-key">Shift</span> + <span class="keyboard-key">Alt</span> + <span class="keyboard-key">↓ Down Arrow</span> : <strong>Duplicate Line</strong>. Instantly copies the current line (or highlighted lines) directly below.</li>
-            <li><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Shift</span> + <span class="keyboard-key">K</span> : <strong>Delete Line</strong>. Instantly deletes the entire line your cursor is on.</li>
-            <li><span class="keyboard-key">Tab</span> : <strong>Smart Indent</strong>. Highlights multiple lines? It will push them all forward. No text highlighted? It checks for Snippets first, then inserts 4 spaces.</li>
-            <li><span class="keyboard-key">Shift</span> + <span class="keyboard-key">Tab</span> : <strong>Outdent</strong>. Pulls the current line (or highlighted lines) back by 4 spaces.</li>
+            <li><strong>📂 Open File:</strong> Opens a native file picker. The editor automatically detects the file extension (e.g., <code>.html</code> or <code>.js</code>) and switches the syntax colors to match.</li>
+            <li><strong>💾 Save (Overwrite):</strong> The first time you click this, it asks for permission to link to the file. Afterward, it <strong>silently overwrites</strong> the file on your hard drive so you can code seamlessly.</li>
+            <li><strong>📝 Save As:</strong> Forces the Save dialogue box to open so you can create a copy or rename your work.</li>
         </ul>
 
-        <h2>⚡ Smart Snippet Engine</h2>
-        <p>Stop typing boilerplate code manually. Type one of the trigger words below and immediately press <span class="keyboard-key">Tab</span> to expand it. The engine will even place your cursor in the perfect spot to keep typing!</p>
+        <h2>🚀 Advanced Monaco Features</h2>
+        <p>Because this uses the real VS Code engine, you have access to powerful professional tools natively:</p>
+        <ul>
+            <li><strong>The Command Palette (<span class="keyboard-key">F1</span>):</strong> Press F1 at any time to open the Monaco Command Palette. From here, you can search for and execute hundreds of hidden editor commands.</li>
+            <li><strong>Multi-Cursor Editing:</strong> Hold <span class="keyboard-key">Alt</span> and click anywhere in your code to place multiple cursors. You can type, delete, or paste on dozens of lines simultaneously!</li>
+            <li><strong>The Minimap:</strong> The right side of the editor features a zoomed-out visual map of your entire file, allowing you to click and drag to scroll through massive files instantly.</li>
+            <li><strong>Code Folding:</strong> Hover over the line numbers on the left. You will see small arrows that allow you to collapse (fold) large functions, HTML divs, or CSS blocks to keep your workspace clean.</li>
+        </ul>
+
+        <h2>⌨️ Power Shortcuts Cheat Sheet</h2>
+        <p>Keep your hands on the keyboard. Use these native shortcuts to write code at lightning speed:</p>
         
         <table>
             <tr>
-                <th>Trigger Word + TAB</th>
-                <th>What it generates</th>
+                <th style="width: 35%;">Shortcut</th>
+                <th>Action</th>
             </tr>
-            <tr><td><code>cl</code></td><td><code>console.log();</code></td></tr>
-            <tr><td><code>fn</code></td><td>Standard <code>function name() { ... }</code> block</td></tr>
-            <tr><td><code>afn</code></td><td>Arrow function <code>const name = () => { ... }</code></td></tr>
-            <tr><td><code>for</code></td><td>Standard <code>for</code> loop with <code>i</code> iterator</td></tr>
-            <tr><td><code>try</code></td><td>Full <code>try / catch</code> block with error logging</td></tr>
-            <tr><td><code>qs</code></td><td><code>document.querySelector('');</code></td></tr>
-            <tr><td><code>ael</code></td><td><code>element.addEventListener('click', (e) => { ... });</code></td></tr>
-            <tr><td><code>fetch</code></td><td>Full API Fetch boilerplate with JSON and catch blocks</td></tr>
-            <tr><td><code>html</code></td><td>Complete HTML5 boilerplate Document</td></tr>
+            <tr>
+                <td><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">S</span></td>
+                <td><strong>True Save:</strong> Silently overwrites the current file.</td>
+            </tr>
+            <tr>
+                <td><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">D</span></td>
+                <td><strong>Add Selection to Next Find Match:</strong> Highlights the current word. Press it again to highlight the next instance of that word so you can edit both at once!</td>
+            </tr>
+            <tr>
+                <td><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">/</span></td>
+                <td><strong>Toggle Comment:</strong> Instantly comments or uncomments the current line (or selected block) using the correct syntax for your language.</td>
+            </tr>
+            <tr>
+                <td><span class="keyboard-key">Shift</span> + <span class="keyboard-key">Alt</span> + <span class="keyboard-key">↓</span></td>
+                <td><strong>Copy Line Down:</strong> Duplicates the current line directly below.</td>
+            </tr>
+            <tr>
+                <td><span class="keyboard-key">Alt</span> + <span class="keyboard-key">↑</span> / <span class="keyboard-key">↓</span></td>
+                <td><strong>Move Line:</strong> Moves the current line of code up or down through your file.</td>
+            </tr>
+            <tr>
+                <td><span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">F</span></td>
+                <td><strong>Find & Replace:</strong> Opens the native search widget in the top right corner.</td>
+            </tr>
+            <tr>
+                <td><span class="keyboard-key">Tab</span> / <span class="keyboard-key">Shift</span>+<span class="keyboard-key">Tab</span></td>
+                <td><strong>Indent / Outdent:</strong> Pushes or pulls the current line (or all highlighted lines) by 4 spaces.</td>
+            </tr>
         </table>
 
-        <h2>📂 File System & True Overwrite</h2>
-        <p>Because this app uses modern browser APIs, it interacts with your hard drive much like a native app.</p>
-        <ul>
-            <li><strong>Open File:</strong> Opens your native OS file picker. It remembers your last folder.</li>
-            <li><strong>Save (Overwrite):</strong> The first time you click this, the browser will ask permission to link to the file. Once granted, clicking Save will <em>silently overwrite</em> the file on your hard drive with zero popups!</li>
-            <li><strong>Save As:</strong> Forces the "Save" dialogue box to open so you can create a new copy or rename the file.</li>
-        </ul>
+        <h2>⚡ IntelliSense & Smart Snippets</h2>
+        <p>Type any of the trigger words below and immediately press <span class="keyboard-key">Tab</span> to generate boilerplate code and auto-place your cursor.</p>
+        
+        <h3>JavaScript Snippets <span class="badge">JS Mode</span></h3>
+        <table>
+            <tr><th style="width: 25%;">Trigger + TAB</th><th>What it generates</th></tr>
+            <tr><td><code>cl</code></td><td><code>console.log( | );</code></td></tr>
+            <tr><td><code>fn</code></td><td>Standard function block <code>function name() { ... }</code></td></tr>
+            <tr><td><code>afn</code></td><td>Arrow function <code>const name = () => { ... }</code></td></tr>
+            <tr><td><code>for</code></td><td>Standard <code>for</code> loop (automatically links the <code>i</code> variables)</td></tr>
+            <tr><td><code>try</code></td><td>Full <code>try / catch</code> block with error logging</td></tr>
+            <tr><td><code>qs</code></td><td><code>document.querySelector(' | ');</code></td></tr>
+            <tr><td><code>ael</code></td><td>Event Listener boilerplate <code>element.addEventListener(...)</code></td></tr>
+            <tr><td><code>fetch</code></td><td>Full API Fetch code with JSON and catch blocks</td></tr>
+        </table>
 
-        <div style="text-align: center; margin-top: 50px;">
+        <h3>HTML/CSS Snippets <span class="badge">HTML Mode</span></h3>
+        <table>
+            <tr><th style="width: 25%;">Trigger + TAB</th><th>What it generates</th></tr>
+            <tr><td><code>html</code></td><td>Complete HTML5 Document Boilerplate</td></tr>
+            <tr><td><code>style</code></td><td>Internal <code>&lt;style&gt;</code> block</td></tr>
+            <tr><td><code>script</code></td><td>Internal <code>&lt;script&gt;</code> block</td></tr>
+            <tr><td><code>scriptsrc</code></td><td>External script link <code>&lt;script src="..."&gt;</code></td></tr>
+            <tr><td><code>link</code></td><td>External CSS link <code>&lt;link rel="stylesheet"...&gt;</code></td></tr>
+            <tr><td><code>div</code></td><td><code>&lt;div class="..."&gt; &lt;/div&gt;</code></td></tr>
+            <tr><td><code>a</code></td><td>Hyperlink tag <code>&lt;a href="..."&gt;</code></td></tr>
+        </table>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 40px 0;">
+
+        <p style="font-size: 13px; color: var(--text-secondary); text-align: center;"><strong>🌐 Engine Architecture:</strong> This editor runs 100% offline via your local <code>libs/vs</code> folder. If those files are deleted or moved, the editor automatically falls back to a secure online CDN, displaying a 🌐 icon in the top right corner.</p>
+        
+        <div style="text-align: center; margin-top: 40px;">
             <a href="workspace.html"><button style="background: var(--accent-primary); color: var(--text-inverse); font-size: 16px; padding: 0 25px; height: 50px; border-radius: var(--radius-md); border: none; font-weight: bold; cursor: pointer;">Launch Code Editor 🚀</button></a>
         </div>
-
     </div>
 
 </div>
