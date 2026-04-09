@@ -27,3 +27,22 @@ A split-pane Markdown editor that renders your technical notes into beautiful HT
 * A localized scraping engine designed to parse data directly from your machine.
 
 ---
+## 🚀 Getting Started
+
+This suite uses modern Web APIs (like `showOpenFilePicker` and `showSaveFilePicker`) to enable true, silent file overwriting without triggering browser download popups. 
+
+Because modern browsers enforce strict security protocols on local `file:///` URLs, **you must run this suite on a local server** to unlock its full memory capabilities (like remembering your last opened folder).
+
+**How to run locally (takes 5 seconds):**
+
+**Option 1: Using Python (Mac/Windows)**
+1. Open your terminal and navigate to this project folder.
+2. Run the command: `python -m http.server 8000`
+3. Open your browser and go to `http://localhost:8000`
+
+**Option 2: Using VS Code**
+1. Open this project folder in VS Code.
+2. Install the **Live Server** extension.
+3. Right-click `index.html` and click **"Open with Live Server"**.
+
+*(Note: You can still open `index.html` directly in your browser without a server, but the Code Editor will default to your OS Documents folder every time you click 'Open File'.)*
