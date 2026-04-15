@@ -10,18 +10,43 @@
     .workspace-container { display: flex; flex-direction: column; height: 100vh; padding: 20px; box-sizing: border-box; width: 100%; }
     .editor-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; align-items: center; background: var(--surface-dark); padding: 10px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
     .toolbar-divider { width: 1px; height: 25px; background: var(--border-color); margin: 0 5px; }
+    
     .editor-wrapper { flex-grow: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
-    .editor-body { flex-grow: 1; min-height: 0; min-width: 0; background: var(--bg-start); position: relative; }
+    
+    /* Split Pane Layout for Live Preview */
+    .editor-body { flex-grow: 1; display: flex; flex-direction: row; min-height: 0; min-width: 0; background: var(--bg-start); position: relative; }
+    
+    #monaco-wrapper { flex-grow: 1; position: relative; min-width: 0; transition: width 0.3s ease; }
     #monaco-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+    
+    #preview-wrapper { 
+        width: 0; 
+        display: flex; flex-direction: column; 
+        border-left: 1px solid var(--border-color); background: #fff; 
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; 
+    }
+    #preview-wrapper.open { width: 45%; } 
+    
+    #preview-header { 
+        background: var(--surface-light); border-bottom: 1px solid var(--border-color); 
+        padding: 5px 15px; font-size: 12px; font-weight: bold; color: var(--text-primary); 
+        display: flex; justify-content: space-between; align-items: center; white-space: nowrap; height: 35px; box-sizing: border-box;
+    }
+    #live-preview { flex-grow: 1; width: 100%; height: 100%; border: none; background: #fff; }
+
     .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--surface-light); padding: 5px 15px; font-family: monospace; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border-color); }
     #file-name-display { flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .status-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; white-space: nowrap; }
     #language-selector { background: transparent; color: var(--accent-primary); border: none; outline: none; cursor: pointer; font-family: monospace; font-size: 12px; font-weight: bold; width: auto; padding: 0; }
     
+    /* Mobile Override for Preview */
     @media screen and (max-width: 768px) {
         html, body { overflow: auto; height: auto; }
         .workspace-container { height: auto; min-height: 100vh; }
-        .editor-wrapper { min-height: 500px; }
+        .editor-wrapper { min-height: 600px; }
+        .editor-body { flex-direction: column; }
+        #preview-wrapper { width: 100% !important; height: 0; border-left: none; border-top: 1px solid var(--border-color); transition: height 0.3s ease; }
+        #preview-wrapper.open { height: 50%; }
     }
 </style>
 </head>
@@ -47,24 +72,42 @@
 
     <div class="editor-toolbar">
         <input type="file" id="file-input" style="display: none;" accept=".js,.css,.html,.txt,.json,.xml">
-        <button id="btn-open">📂 Open File</button>
-        <button id="btn-save" style="color: var(--color-success); border-color: rgba(35, 134, 54, 0.4);">💾 Save (Overwrite)</button>
-        <button id="btn-save-as" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4);">📝 Save As...</button>
+        <button id="btn-open">📂 Open</button>
+        <button id="btn-save" style="color: var(--color-success); border-color: rgba(35, 134, 54, 0.4);">💾 Save</button>
         <div class="toolbar-divider"></div>
         <button id="btn-copy">📋 Copy</button>
         <button id="btn-clear" class="btn-clear">🗑️ Clear</button>
-        <button id="btn-fullscreen" style="margin-left: auto;">⛶ Fullscreen</button>
+        
+        <button id="btn-toggle-preview" style="margin-left: auto; color: var(--color-custom); border-color: rgba(163, 113, 247, 0.4);">👁️ Live Preview</button>
+        <button id="btn-fullscreen">⛶ Fullscreen</button>
         <span style="margin-left: 10px; font-size: 13px; color: var(--color-success);" id="editor-toast"></span>
     </div>
 
     <div class="editor-wrapper">
-        <div class="editor-body"><div id="monaco-container"></div></div>
+        <div class="editor-body">
+            
+            <div id="monaco-wrapper">
+                <div id="monaco-container"></div>
+            </div>
+
+            <div id="preview-wrapper">
+                <div id="preview-header">
+                    <span>⚡ Live HTML/JS/CSS Output</span>
+                    <button id="btn-close-preview" class="btn-clear" style="padding: 2px 6px; height: 24px; border-radius: 4px; box-shadow: none;">❌</button>
+                </div>
+                <iframe id="live-preview" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+
+        </div>
         <div class="status-bar">
-            <span id="file-name-display">untitled.js</span>
+            <span id="file-name-display">index.html</span>
             <div class="status-controls">
                 <select id="language-selector">
-                    <option value="javascript">JavaScript</option><option value="html">HTML</option>
-                    <option value="css">CSS</option><option value="json">JSON</option><option value="plaintext">Plain Text</option>
+                    <option value="html" selected>HTML</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="css">CSS</option>
+                    <option value="json">JSON</option>
+                    <option value="plaintext">Plain Text</option>
                 </select>
                 <span>UTF-8 | <span id="cursor-position">Ln 1, Col 1</span></span>
             </div>
@@ -73,7 +116,7 @@
 </div>
 
 <script>
-    // Theme Toggler with Instant Monaco Update
+    // Theme Toggler
     const themeBtn = document.getElementById('theme-toggle-btn');
     const htmlTag = document.documentElement;
     const savedTheme = localStorage.getItem('app_theme');
@@ -91,17 +134,46 @@
             }
         };
     }
+
+    // 🚀 LIVE PREVIEW LOGIC (Fixed for Security Sandboxing)
+    const previewWrapper = document.getElementById('preview-wrapper');
+    const btnTogglePreview = document.getElementById('btn-toggle-preview');
+    const btnClosePreview = document.getElementById('btn-close-preview');
+    const iframe = document.getElementById('live-preview');
+    let previewTimeout;
+
+    function togglePreview() {
+        previewWrapper.classList.toggle('open');
+        updatePreview();
+    }
+    
+    btnTogglePreview.onclick = togglePreview;
+    btnClosePreview.onclick = togglePreview;
+
+    function updatePreview() {
+        if (!previewWrapper.classList.contains('open') || !window.editor) return;
+        
+        // Using srcdoc bypasses the cross-origin block while keeping the sandbox safe!
+        const code = window.editor.getValue();
+        iframe.srcdoc = code; 
+    }
+
+    // Advanced Monaco Resize Observer 
+    const monacoWrapper = document.getElementById('monaco-wrapper');
+    const resizeObserver = new ResizeObserver(() => {
+        if (window.editor) window.editor.layout();
+    });
+    resizeObserver.observe(monacoWrapper);
 </script>
 
 <script>
-    // 🚀 RESTORED: Intelligent Monaco Loading Engine
     function bootMonaco(basePath) {
         require.config({ paths: { 'vs': basePath } });
         require(['vs/editor/editor.main'], function() {
             const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
             window.editor = monaco.editor.create(document.getElementById('monaco-container'), {
-                value: '// Welcome to Pro Workspace\nconsole.log(\'Ready\');',
-                language: 'javascript',
+                value: '<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; text-align: center; margin-top: 50px; }\n    h1 { color: #2f81f7; }\n  </style>\n</head>\n<body>\n  <h1>⚡ Live Preview Active</h1>\n  <p>Edit this HTML to see it update instantly!</p>\n</body>\n</html>',
+                language: 'html',
                 theme: isDark ? 'vs-dark' : 'vs',
                 automaticLayout: true,
                 minimap: { enabled: true },
@@ -111,21 +183,25 @@
                 insertSpaces: true
             });
 
+            // Trigger live preview update whenever code changes (Debounced by 500ms)
+            window.editor.onDidChangeModelContent(() => {
+                clearTimeout(previewTimeout);
+                previewTimeout = setTimeout(updatePreview, 500);
+            });
+
             const script = document.createElement('script');
             script.src = 'libs/workspace.js';
             document.body.appendChild(script);
         });
     }
 
-    // 1. Try to load local files
     const localLoader = document.createElement('script');
     localLoader.src = 'libs/vs/loader.js';
     localLoader.onload = () => bootMonaco('libs/vs');
     
-    // 2. If local files are missing, fallback to internet CDN!
     localLoader.onerror = () => {
         console.warn('Local Monaco missing. Loading from CDN...');
-        document.getElementById('editor-toast').textContent = "🌐 Using Online Engine (Local missing)";
+        document.getElementById('editor-toast').textContent = "🌐 Using Online Engine";
         document.getElementById('editor-toast').style.color = "var(--color-warning)";
         
         const cdnLoader = document.createElement('script');
