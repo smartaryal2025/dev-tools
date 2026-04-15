@@ -8,19 +8,23 @@
 <script src="libs/jszip.min.js"></script>
 </head>
 <body>
-
 <div class="container">
 
-    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
-        <div style="font-size: 24px; font-weight: bold; color: var(--accent-primary); margin-bottom: 10px;">Pro Developer Tools</div>
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+        <div style="font-size: 24px; font-weight: bold; color: var(--text-primary); flex-shrink: 0;">🛠️ Pro Dev Suite</div>
         
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-            <a href="workspace.html" class="header-btn" style="text-decoration: none;">💻 Code Workspace</a>
-            <a href="editor.html" class="header-btn" style="text-decoration: none;">⚖️ Diff Editor</a>
-            <a href="scraper.html" class="header-btn" style="text-decoration: none;">🕸️ Data Scraper</a>
-            <a href="notes.html" class="header-btn" style="text-decoration: none;">📝 Dev Notes</a>
-            <button id="open-vault-btn" class="header-btn">🗝️ Password Vault</button>
-            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+        <div class="header-actions">
+            <button id="open-vault-btn" class="header-btn" style="border-color: var(--color-warning); color: var(--color-warning);">🗝️ Vault</button>
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="workspace.html" class="dropdown-link">💻 Code Workspace</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="scraper.html" class="dropdown-link">🕸️ Data Scraper</a>
+                    <a href="notes.html" class="dropdown-link">📝 Dev Notes</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
         </div>
     </div>
 
@@ -34,208 +38,223 @@
     </div>
 
     <div id="tab-minify" class="tab-pane active">
-        <h2 class="tab-title text-success">🧹 Code Minifier</h2>
-        <select id="minify-type" class="custom-input mb-15">
-            <option value="js">JavaScript</option>
-            <option value="css">CSS</option>
-            <option value="html">HTML</option>
-            <option value="txt">Text (.txt)</option>
-        </select>
-        <div class="grid-layout">
-            <div class="panel">
-                <h3>Input</h3>
-                <div class="mode-toggle">
-                    <label class="text-warning fw-bold mr-10"><input type="radio" name="minify-batch-mode" value="minify" checked> 🗜️ Minify</label>
-                    <label class="text-success fw-bold"><input type="radio" name="minify-batch-mode" value="beautify"> ✨ Beautify</label>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h2 class="tab-title text-success" style="margin:0;">Code Minifier</h2>
+                <div style="background: var(--surface-light); padding: 5px 10px; border-radius: var(--radius-md); font-size: 13px;">
+                    <label class="text-success fw-bold" style="margin-right:10px;"><input type="radio" name="minify-batch-mode" value="minify" checked> 🗜️ Batch Minify</label>
+                    <label class="text-warning fw-bold"><input type="radio" name="minify-batch-mode" value="beautify"> ✨ Batch Beautify</label>
                 </div>
-                <div class="drop-zone" id="minify-drop-zone">📁 Drop 1 file to paste, or 2+ for Batch</div>
-                <input type="file" id="minify-file-input" class="hidden-input" accept=".js,.css,.html,.htm,.txt" multiple>
-                <textarea id="minify-input" class="code-area" placeholder="Paste code here..."></textarea>
             </div>
-            <div class="panel">
-                <h3>Output</h3>
-                <textarea id="minify-output" class="code-area" readonly placeholder="Result will appear here..."></textarea>
-                <button class="copy-btn" id="minify-copy-btn">📋 Copy Output</button>
-            </div>
+            <select id="minify-type" class="custom-input" style="width: 200px; margin:0;">
+                <option value="js">JavaScript</option><option value="css">CSS</option><option value="html">HTML</option><option value="txt">Text</option>
+            </select>
         </div>
-        <div class="action-row">
-            <button id="minify-btn-min">🗜️ Minify</button>
-            <button id="minify-btn-beautify">✨ Beautify</button>
-            <button id="minify-btn-clear" class="btn-clear">🗑️ Clear</button>
-            <button id="minify-dl-btn">💾 Download</button>
-            <button id="minify-dl-zip" class="zip-btn">📦 Zip Download</button>
+        <div class="modern-split-grid">
+            <div class="grid-col mobile-order-1">
+                <div class="drop-zone drop-zone-wrapper" id="minify-drop-zone" onclick="document.getElementById('minify-file-input').click()">📁 Drop files or Click to Browse</div>
+                <input type="file" id="minify-file-input" style="display:none;" accept=".js,.css,.html,.txt" multiple>
+                <textarea id="minify-input" class="code-area" style="flex-grow: 1;" placeholder="Paste raw code here..."></textarea>
+                <div class="action-row mobile-order-2">
+                    <button id="minify-btn-min" style="background: var(--color-success); color: #fff; border-color: var(--color-success);">🗜️ Minify</button>
+                    <button id="minify-btn-beautify">✨ Beautify</button>
+                    <button id="minify-btn-clear" class="btn-clear" style="margin-left: auto;">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="grid-col mobile-order-3">
+                <div class="drop-zone-wrapper" style="color: var(--text-secondary); font-size: 13px; font-weight: bold; justify-content: flex-start; padding-left: 5px;">Output Viewer</div>
+                <textarea id="minify-output" class="code-area" style="flex-grow: 1;" readonly placeholder="Result..."></textarea>
+                <div class="action-row mobile-order-4">
+                    <button id="minify-copy-btn" class="copy-btn">📋 Copy Output</button>
+                    <button id="minify-dl-btn" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">💾 Download</button>
+                    <button id="minify-dl-zip" class="zip-btn" style="display:none; background: var(--color-warning); color: #fff; border-color: var(--color-warning);">📦 Zip Download</button>
+                </div>
+            </div>
         </div>
         <div id="minify-log-area" class="log-area"><div>System Ready.</div></div>
     </div>
 
     <div id="tab-packer" class="tab-pane">
-        <h2 class="tab-title text-accent">📦 Ultimate JS Packer</h2>
-        <div class="grid-layout">
-            <div class="panel">
-                <h3>Input</h3>
-                <div class="mode-toggle">
-                    <label class="text-accent fw-bold mr-10"><input type="radio" name="packer-batch-mode" value="pack" checked> 📦 Pack</label>
-                    <label class="text-warning fw-bold"><input type="radio" name="packer-batch-mode" value="unpack"> 🔓 Unpack</label>
-                </div>
-                <div class="drop-zone" id="packer-drop-zone">📁 Drop 1 file to paste, or 2+ for Batch</div>
-                <input type="file" id="packer-file-input" class="hidden-input" accept=".js" multiple>
-                <textarea id="packer-input" class="code-area" placeholder="// Paste code here..."></textarea>
-            </div>
-            <div class="panel">
-                <h3>Output</h3>
-                <textarea id="packer-output" class="code-area" readonly placeholder="Result will appear here..."></textarea>
-                <button class="copy-btn" id="packer-copy-btn">📋 Copy Output</button>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; margin-bottom: 15px; gap: 15px;">
+            <h2 class="tab-title text-accent" style="margin:0;">JS Packer</h2>
+            <div style="background: var(--surface-light); padding: 5px 10px; border-radius: var(--radius-md); font-size: 13px;">
+                <label class="text-accent fw-bold" style="margin-right:10px;"><input type="radio" name="packer-batch-mode" value="pack" checked> 📦 Batch Pack</label>
+                <label class="text-warning fw-bold"><input type="radio" name="packer-batch-mode" value="unpack"> 🔓 Batch Unpack</label>
             </div>
         </div>
-        <div class="action-row">
-            <button id="packer-btn-pack">📦 Pack</button>
-            <button id="packer-btn-unpack">🔓 Unpack</button>
-            <button id="packer-btn-clear" class="btn-clear">🗑️ Clear</button>
-            <button id="packer-dl-btn">💾 Download</button>
-            <button id="packer-dl-zip" class="zip-btn">📦 Zip Download</button>
+        <div class="modern-split-grid">
+            <div class="grid-col mobile-order-1">
+                <div class="drop-zone drop-zone-wrapper" id="packer-drop-zone" onclick="document.getElementById('packer-file-input').click()">📁 Drop files or Click to Browse</div>
+                <input type="file" id="packer-file-input" style="display:none;" accept=".js" multiple>
+                <textarea id="packer-input" class="code-area" style="flex-grow: 1;" placeholder="// Paste JS code here..."></textarea>
+                <div class="action-row mobile-order-2">
+                    <button id="packer-btn-pack" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">📦 Pack JS</button>
+                    <button id="packer-btn-unpack">🔓 Unpack JS</button>
+                    <button id="packer-btn-clear" class="btn-clear" style="margin-left: auto;">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="grid-col mobile-order-3">
+                <div class="drop-zone-wrapper" style="color: var(--text-secondary); font-size: 13px; font-weight: bold; justify-content: flex-start; padding-left: 5px;">Output Viewer</div>
+                <textarea id="packer-output" class="code-area" style="flex-grow: 1;" readonly placeholder="Result..."></textarea>
+                <div class="action-row mobile-order-4">
+                    <button id="packer-copy-btn" class="copy-btn">📋 Copy Output</button>
+                    <button id="packer-dl-btn" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">💾 Download</button>
+                    <button id="packer-dl-zip" class="zip-btn" style="display:none; background: var(--color-warning); color: #fff; border-color: var(--color-warning);">📦 Zip Download</button>
+                </div>
+            </div>
         </div>
         <div id="packer-log-area" class="log-area"><div>System Ready.</div></div>
     </div>
 
     <div id="tab-crypto" class="tab-pane">
-        <h2 class="tab-title text-danger">🔐 AES Encrypter</h2>
-        
-        <div class="input-group mb-15">
-            <input type="password" id="crypto-pass" class="custom-input" placeholder="🔑 Enter Secure Password (REQUIRED FOR ALL ACTIONS)">
-            <button id="crypto-gen-btn" class="btn-gen" title="Generate & Save">🎲 Auto-Gen</button>
-        </div>
-
-        <div class="grid-layout">
-            <div class="panel">
-                <h3>Input</h3>
-                <div class="mode-toggle">
-                    <label class="text-danger fw-bold mr-10"><input type="radio" name="crypto-batch-mode" value="encrypt" checked> 🔒 Encrypt</label>
-                    <label class="text-warning fw-bold"><input type="radio" name="crypto-batch-mode" value="decrypt"> 🔓 Decrypt</label>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h2 class="tab-title text-danger" style="margin:0;">AES Encrypter</h2>
+                <div style="background: var(--surface-light); padding: 5px 10px; border-radius: var(--radius-md); font-size: 13px;">
+                    <label class="text-danger fw-bold" style="margin-right:10px;"><input type="radio" name="crypto-batch-mode" value="encrypt" checked> 🔒 Batch Encrypt</label>
+                    <label class="text-warning fw-bold"><input type="radio" name="crypto-batch-mode" value="decrypt"> 🔓 Batch Decrypt</label>
                 </div>
-                <div class="drop-zone" id="crypto-drop-zone">📁 Drop 1 file to paste, or 2+ for Batch</div>
-                <input type="file" id="crypto-file-input" class="hidden-input" multiple>
-                <textarea id="crypto-input" class="code-area" placeholder="Paste text/cipher here..."></textarea>
             </div>
-            <div class="panel">
-                <h3>Output</h3>
-                <textarea id="crypto-output" class="code-area" readonly placeholder="Result will appear here..."></textarea>
-                <button class="copy-btn" id="crypto-copy-btn">📋 Copy Output</button>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="position: relative;">
+                    <input type="password" id="crypto-pass" class="custom-input" placeholder="🔑 Master Password" style="width: 220px; padding-right: 35px;">
+                    <button type="button" onclick="togglePwd('crypto-pass')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 0;">👁️</button>
+                </div>
+                <button id="crypto-gen-btn" class="header-btn">🎲 Gen</button>
             </div>
         </div>
-        <div class="action-row">
-            <button id="crypto-btn-enc">🔒 Encrypt</button>
-            <button id="crypto-btn-dec">🔓 Decrypt</button>
-            <button id="crypto-btn-clear" class="btn-clear">🗑️ Clear</button>
-            <button id="crypto-dl-btn">💾 Download</button>
-            <button id="crypto-dl-zip" class="zip-btn">📦 Zip Download</button>
+        <div class="modern-split-grid">
+            <div class="grid-col mobile-order-1">
+                <div class="drop-zone drop-zone-wrapper" id="crypto-drop-zone" onclick="document.getElementById('crypto-file-input').click()">📁 Drop files or Click to Browse</div>
+                <input type="file" id="crypto-file-input" style="display:none;" multiple>
+                <textarea id="crypto-input" class="code-area" style="flex-grow: 1;" placeholder="Paste text/cipher here..."></textarea>
+                <div class="action-row mobile-order-2">
+                    <button id="crypto-btn-enc" style="background: var(--color-danger); color: #fff; border-color: var(--color-danger);">🔒 Encrypt</button>
+                    <button id="crypto-btn-dec">🔓 Decrypt</button>
+                    <button id="crypto-btn-clear" class="btn-clear" style="margin-left: auto;">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="grid-col mobile-order-3">
+                <div class="drop-zone-wrapper" style="color: var(--text-secondary); font-size: 13px; font-weight: bold; justify-content: flex-start; padding-left: 5px;">Secure Output</div>
+                <textarea id="crypto-output" class="code-area" style="flex-grow: 1;" readonly placeholder="Secure result..."></textarea>
+                <div class="action-row mobile-order-4">
+                    <button id="crypto-copy-btn" class="copy-btn">📋 Copy Output</button>
+                    <button id="crypto-dl-btn" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">💾 Download</button>
+                    <button id="crypto-dl-zip" class="zip-btn" style="display:none; background: var(--color-warning); color: #fff; border-color: var(--color-warning);">📦 Zip Download</button>
+                </div>
+            </div>
         </div>
         <div id="crypto-log-area" class="log-area"><div>System Ready.</div></div>
     </div>
 
     <div id="tab-custom" class="tab-pane">
-        <h2 class="tab-title text-custom">🌀 Custom Cipher "KISH::"</h2>
-        
-        <div class="input-group mb-15">
-            <input type="password" id="custom-pass" class="custom-input" placeholder="🔑 Enter Secure Password (REQUIRED TO SHIFT DATA)">
-            <button id="custom-gen-btn" class="btn-gen" title="Generate & Save">🎲 Auto-Gen</button>
-        </div>
-
-        <div class="grid-layout">
-            <div class="panel">
-                <h3>Input</h3>
-                <div class="mode-toggle">
-                    <label class="text-custom fw-bold mr-10"><input type="radio" name="custom-batch-mode" value="encrypt" checked> 🌀 Obfuscate</label>
-                    <label class="text-warning fw-bold"><input type="radio" name="custom-batch-mode" value="decrypt"> 🔄 Reveal</label>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h2 class="tab-title text-custom" style="margin:0;">Custom Cipher</h2>
+                <div style="background: var(--surface-light); padding: 5px 10px; border-radius: var(--radius-md); font-size: 13px;">
+                    <label class="text-custom fw-bold" style="margin-right:10px;"><input type="radio" name="custom-batch-mode" value="encrypt" checked> 🌀 Batch Obfuscate</label>
+                    <label class="text-warning fw-bold"><input type="radio" name="custom-batch-mode" value="decrypt"> 🔄 Batch Reveal</label>
                 </div>
-                <div class="drop-zone" id="custom-drop-zone">📁 Drop 1 file to paste, or 2+ for Batch</div>
-                <input type="file" id="custom-file-input" class="hidden-input" multiple>
-                <textarea id="custom-input" class="code-area" placeholder="Paste standard text or custom cipher here..."></textarea>
             </div>
-            <div class="panel">
-                <h3>Output</h3>
-                <textarea id="custom-output" class="code-area" readonly placeholder="Result will appear here..."></textarea>
-                <button class="copy-btn" id="custom-copy-btn">📋 Copy Output</button>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="position: relative;">
+                    <input type="password" id="custom-pass" class="custom-input" placeholder="🔑 Shift Password" style="width: 220px; padding-right: 35px;">
+                    <button type="button" onclick="togglePwd('custom-pass')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 0;">👁️</button>
+                </div>
+                <button id="custom-gen-btn" class="header-btn">🎲 Gen</button>
             </div>
         </div>
-        <div class="action-row">
-            <button id="custom-btn-enc">🌀 Obfuscate</button>
-            <button id="custom-btn-dec">🔄 Reveal</button>
-            <button id="custom-btn-clear" class="btn-clear">🗑️ Clear</button>
-            <button id="custom-dl-btn">💾 Download</button>
-            <button id="custom-dl-zip" class="zip-btn">📦 Zip Download</button>
+        <div class="modern-split-grid">
+            <div class="grid-col mobile-order-1">
+                <div class="drop-zone drop-zone-wrapper" id="custom-drop-zone" onclick="document.getElementById('custom-file-input').click()">📁 Drop files or Click to Browse</div>
+                <input type="file" id="custom-file-input" style="display:none;" multiple>
+                <textarea id="custom-input" class="code-area" style="flex-grow: 1;" placeholder="Paste data here..."></textarea>
+                <div class="action-row mobile-order-2">
+                    <button id="custom-btn-enc" style="background: var(--color-custom); color: #fff; border-color: var(--color-custom);">🌀 Obfuscate</button>
+                    <button id="custom-btn-dec">🔄 Reveal</button>
+                    <button id="custom-btn-clear" class="btn-clear" style="margin-left: auto;">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="grid-col mobile-order-3">
+                <div class="drop-zone-wrapper" style="color: var(--text-secondary); font-size: 13px; font-weight: bold; justify-content: flex-start; padding-left: 5px;">Cipher Output</div>
+                <textarea id="custom-output" class="code-area" style="flex-grow: 1;" readonly placeholder="Cipher result..."></textarea>
+                <div class="action-row mobile-order-4">
+                    <button id="custom-copy-btn" class="copy-btn">📋 Copy Output</button>
+                    <button id="custom-dl-btn" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">💾 Download</button>
+                    <button id="custom-dl-zip" class="zip-btn" style="display:none; background: var(--color-warning); color: #fff; border-color: var(--color-warning);">📦 Zip Download</button>
+                </div>
+            </div>
         </div>
-        <div id="custom-log-area" class="log-area"><div>System Ready. Proprietary Engine Loaded.</div></div>
+        <div id="custom-log-area" class="log-area"><div>System Ready.</div></div>
     </div>
 
     <div id="tab-copyright" class="tab-pane">
-        <h2 class="tab-title text-warning">© Copyright Manager</h2>
-        <div class="grid-layout">
-            <div class="panel">
-                <h3>Input</h3>
-                <div class="mode-toggle">
-                    <label class="text-success fw-bold mr-10"><input type="radio" name="copyright-batch-mode" value="inject" checked> ➕ Inject Header</label>
-                    <label class="text-danger fw-bold"><input type="radio" name="copyright-batch-mode" value="remove"> ➖ Remove Header</label>
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; margin-bottom: 15px; gap: 15px;">
+            <h2 class="tab-title text-warning" style="margin:0;">Copyright Manager</h2>
+            <div style="background: var(--surface-light); padding: 5px 10px; border-radius: var(--radius-md); font-size: 13px;">
+                <label class="text-success fw-bold" style="margin-right:10px;"><input type="radio" name="copyright-batch-mode" value="inject" checked> ➕ Batch Inject</label>
+                <label class="text-danger fw-bold"><input type="radio" name="copyright-batch-mode" value="remove"> ➖ Batch Remove</label>
+            </div>
+        </div>
+        <div class="modern-split-grid">
+            <div class="grid-col mobile-order-1">
+                <div class="drop-zone drop-zone-wrapper" id="copyright-drop-zone" onclick="document.getElementById('copyright-file-input').click()">📁 Drop files or Click to Browse</div>
+                <input type="file" id="copyright-file-input" style="display:none;" multiple>
+                <textarea id="copyright-input" class="code-area" style="flex-grow: 1;" placeholder="Paste code here..."></textarea>
+                <div class="action-row mobile-order-2">
+                    <button id="copyright-btn-inject" style="background: var(--color-warning); color: #fff; border-color: var(--color-warning);">➕ Inject Header</button>
+                    <button id="copyright-btn-remove">➖ Remove</button>
+                    <button id="copyright-btn-clear" class="btn-clear" style="margin-left: auto;">🗑️ Clear</button>
                 </div>
-                <div class="drop-zone" id="copyright-drop-zone">📁 Drop 1 file to paste, or 2+ for Batch</div>
-                <input type="file" id="copyright-file-input" class="hidden-input" multiple>
-                <textarea id="copyright-input" class="code-area" placeholder="Paste code here to inject/remove copyright..."></textarea>
             </div>
-            <div class="panel">
-                <h3>Output</h3>
-                <textarea id="copyright-output" class="code-area" readonly placeholder="Result will appear here..."></textarea>
-                <button class="copy-btn" id="copyright-copy-btn">📋 Copy Output</button>
+            <div class="grid-col mobile-order-3">
+                <div class="drop-zone-wrapper" style="color: var(--text-secondary); font-size: 13px; font-weight: bold; justify-content: flex-start; padding-left: 5px;">Processed Output</div>
+                <textarea id="copyright-output" class="code-area" style="flex-grow: 1;" readonly placeholder="Result will appear here..."></textarea>
+                <div class="action-row mobile-order-4">
+                    <button id="copyright-copy-btn" class="copy-btn">📋 Copy Output</button>
+                    <button id="copyright-dl-btn" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">💾 Download</button>
+                    <button id="copyright-dl-zip" class="zip-btn" style="display:none; background: var(--color-warning); color: #fff; border-color: var(--color-warning);">📦 Zip Download</button>
+                </div>
             </div>
         </div>
-        <div class="action-row">
-            <button id="copyright-btn-inject">➕ Inject</button>
-            <button id="copyright-btn-remove">➖ Remove</button>
-            <button id="copyright-btn-clear" class="btn-clear">🗑️ Clear</button>
-            <button id="copyright-dl-btn">💾 Download</button>
-            <button id="copyright-dl-zip" class="zip-btn">📦 Zip Download</button>
-        </div>
-        <div id="copyright-log-area" class="log-area"><div>System Ready. Copyright Engine Loaded.</div></div>
+        <div id="copyright-log-area" class="log-area"><div>System Ready.</div></div>
     </div>
 
     <div id="tab-converter" class="tab-pane">
-        <h2 class="tab-title text-teal">🔠 Code Converter</h2>
-        <select id="converter-type" class="custom-input mb-15">
-            <option value="base64">Base64</option>
-            <option value="url">URL Encode</option>
-            <option value="hex">Hexadecimal</option>
-            <option value="unicode">Unicode Escape (\uXXXX)</option>
-            <option value="ascii">ASCII Char Codes</option>
-            <option value="html-entities">HTML Entities (&amp;lt;)</option>
-            <option value="svg">SVG ↔ Data URI Background</option>
-            <option value="json">JSON Minify ↔ Format</option>
-            <option value="jwt">JWT Token Decode (One-Way)</option>
-            <option value="sha256">SHA-256 Hash (One-Way)</option>
-            <option value="sha512">SHA-512 Hash (One-Way)</option>
-        </select>
-        <div class="grid-layout">
-            <div class="panel">
-                <h3>Input</h3>
-                <div class="mode-toggle">
-                    <label class="text-teal fw-bold mr-10"><input type="radio" name="converter-batch-mode" value="encode" checked> 🔒 Encode / Convert</label>
-                    <label class="text-warning fw-bold"><input type="radio" name="converter-batch-mode" value="decode"> 🔓 Decode / Revert</label>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h2 class="tab-title text-teal" style="margin:0;">Data Converter</h2>
+                <div style="background: var(--surface-light); padding: 5px 10px; border-radius: var(--radius-md); font-size: 13px;">
+                    <label class="text-teal fw-bold" style="margin-right:10px;"><input type="radio" name="converter-batch-mode" value="encode" checked> 🔒 Batch Encode</label>
+                    <label class="text-warning fw-bold"><input type="radio" name="converter-batch-mode" value="decode"> 🔓 Batch Decode</label>
                 </div>
-                <div class="drop-zone" id="converter-drop-zone">📁 Drop 1 file to paste, or 2+ for Batch</div>
-                <input type="file" id="converter-file-input" class="hidden-input" multiple>
-                <textarea id="converter-input" class="code-area" placeholder="Paste standard text or encoded data here..."></textarea>
             </div>
-            <div class="panel">
-                <h3>Output</h3>
-                <textarea id="converter-output" class="code-area" readonly placeholder="Result will appear here..."></textarea>
-                <button class="copy-btn" id="converter-copy-btn">📋 Copy Output</button>
+            <select id="converter-type" class="custom-input" style="width: 220px; margin:0;">
+                <option value="base64">Base64</option><option value="url">URL Encode</option><option value="hex">Hexadecimal</option><option value="unicode">Unicode Escape (\uXXXX)</option><option value="ascii">ASCII Char Codes</option><option value="html-entities">HTML Entities</option><option value="svg">SVG ↔ Data URI</option><option value="json">JSON Minify ↔ Format</option><option value="jwt">JWT Decode</option><option value="sha256">SHA-256 Hash</option><option value="sha512">SHA-512 Hash</option>
+            </select>
+        </div>
+        <div class="modern-split-grid">
+            <div class="grid-col mobile-order-1">
+                <div class="drop-zone drop-zone-wrapper" id="converter-drop-zone" onclick="document.getElementById('converter-file-input').click()">📁 Drop files or Click to Browse</div>
+                <input type="file" id="converter-file-input" style="display:none;" multiple>
+                <textarea id="converter-input" class="code-area" style="flex-grow: 1;" placeholder="Paste data here..."></textarea>
+                <div class="action-row mobile-order-2">
+                    <button id="converter-btn-enc" style="background: var(--color-teal); color: #fff; border-color: var(--color-teal);">🔒 Encode</button>
+                    <button id="converter-btn-dec">🔓 Decode</button>
+                    <button id="converter-btn-clear" class="btn-clear" style="margin-left: auto;">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="grid-col mobile-order-3">
+                <div class="drop-zone-wrapper" style="color: var(--text-secondary); font-size: 13px; font-weight: bold; justify-content: flex-start; padding-left: 5px;">Converted Output</div>
+                <textarea id="converter-output" class="code-area" style="flex-grow: 1;" readonly placeholder="Result..."></textarea>
+                <div class="action-row mobile-order-4">
+                    <button id="converter-copy-btn" class="copy-btn">📋 Copy Output</button>
+                    <button id="converter-dl-btn" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary);">💾 Download</button>
+                    <button id="converter-dl-zip" class="zip-btn" style="display:none; background: var(--color-warning); color: #fff; border-color: var(--color-warning);">📦 Zip Download</button>
+                </div>
             </div>
         </div>
-        <div class="action-row">
-            <button id="converter-btn-enc">🔒 Encode</button>
-            <button id="converter-btn-dec">🔓 Decode</button>
-            <button id="converter-btn-clear" class="btn-clear">🗑️ Clear</button>
-            <button id="converter-dl-btn">💾 Download</button>
-            <button id="converter-dl-zip" class="zip-btn">📦 Zip Download</button>
-        </div>
-        <div id="converter-log-area" class="log-area"><div>System Ready. Universal Decoder Online.</div></div>
+        <div id="converter-log-area" class="log-area"><div>System Ready.</div></div>
     </div>
 
     <div id="vault-modal" class="modal-overlay">
@@ -244,10 +263,11 @@
                 <h3 style="margin:0; color: var(--color-warning);">🗝️ Local Password Vault</h3>
                 <button id="close-vault-btn" class="btn-clear" style="padding: 5px 10px; height:auto; border-radius: 4px;">❌</button>
             </div>
-            <div class="modal-body" id="vault-list">
-                </div>
-            <div class="modal-footer">
-                <small style="color:var(--text-secondary);">Passwords are stored securely in your browser's offline LocalStorage.</small>
+            <div class="modal-body" id="vault-list" style="color: var(--text-secondary); min-height: 100px; display:flex; flex-direction: column; gap: 10px;">
+            </div>
+            <div class="modal-footer" style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <button onclick="clearVault()" class="btn-clear" style="width: 100%; margin-bottom: 10px; border-radius: 4px; padding: 5px;">🗑️ Clear Vault History</button>
+                <small style="color:var(--text-secondary); display:block; text-align:center;">Passwords are stored securely in your browser's offline LocalStorage.</small>
             </div>
         </div>
     </div>
@@ -255,7 +275,6 @@
 </div>
 
 <script>
-// Tab Logic
 function openTab(evt, tabName) {
     document.querySelectorAll(".tab-pane").forEach(el => el.classList.remove("active"));
     document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
@@ -263,16 +282,16 @@ function openTab(evt, tabName) {
     evt.currentTarget.classList.add("active");
 }
 
-// Logging & Auto-Zip Reveal
+// Global Logging Engine
 window.logMsg = function(tool, msg, type="info"){
     const el = document.getElementById(`${tool}-log-area`);
     if(!el) return;
-    const div = document.createElement("div");
-    div.className = `log-${type}`;
+    const div = document.createElement("div"); 
+    div.style.color = type === 'error' ? 'var(--color-danger)' : 'inherit';
     div.textContent = "> " + msg;
-    el.appendChild(div);
-    el.scrollTop = el.scrollHeight;
+    el.appendChild(div); el.scrollTop = el.scrollHeight;
     
+    // Automatically reveal ZIP button when JS triggers completion
     if(msg.includes('ZIP Ready') || msg.includes('ZIP Archive Ready')) {
         const zipBtn = document.getElementById(`${tool}-dl-zip`);
         if(zipBtn) zipBtn.style.display = 'block';
@@ -281,44 +300,33 @@ window.logMsg = function(tool, msg, type="info"){
 
 window.activeZips = { minify: null, packer: null, crypto: null, custom: null, copyright: null, converter: null };
 
-// Global Copy & Download Handlers
+// Single Output Global Copy/Download Handlers
 ['minify', 'packer', 'crypto', 'custom', 'copyright', 'converter'].forEach(tool => {
     const copyBtn = document.getElementById(`${tool}-copy-btn`);
     if(copyBtn) {
         copyBtn.onclick = (e) => {
             const output = document.getElementById(`${tool}-output`);
-            if(!output.value) return;
+            if(!output || !output.value) return;
             navigator.clipboard.writeText(output.value).then(() => {
                 const orig = e.target.innerHTML;
-                e.target.innerHTML = "✔✔ Copied!";
+                e.target.innerHTML = "✔ Copied!";
                 setTimeout(() => { e.target.innerHTML = orig; }, 1500);
             });
         };
     }
-
     const dlBtn = document.getElementById(`${tool}-dl-btn`);
     if(dlBtn) {
         dlBtn.onclick = () => {
-            const content = document.getElementById(`${tool}-output`).value;
-            if (!content) { window.logMsg(tool, 'Nothing to download. Please process text first.', 'error'); return; }
-            
-            let filename = `processed_file.txt`; // Default
-            if (tool === 'minify') filename = `formatted.${document.getElementById('minify-type').value}`;
-            else if (tool === 'packer') filename = `processed.js`;
-            else if (tool === 'crypto') filename = content.startsWith('AES::') ? `secret.enc` : `decrypted.txt`;
-            else if (tool === 'custom') filename = content.startsWith('KISH::') ? `custom_secret.enc` : `revealed.txt`;
-            else if (tool === 'copyright') filename = `copyright_processed.js`;
-            else if (tool === 'converter') filename = `converted_data.txt`;
-
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
+            const output = document.getElementById(`${tool}-output`);
+            if (!output || !output.value) return window.logMsg(tool, 'Nothing to download.', 'error');
+            const blob = new Blob([output.value], { type: 'text/plain' });
             const a = document.createElement("a");
-            a.href = url; a.download = filename;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-            window.logMsg(tool, `Downloaded ${filename}`, 'success');
+            a.href = URL.createObjectURL(blob); a.download = `result.txt`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
         };
     }
-
+    
+    // Wire up the exact ZIP download logic from your original files
     const zipBtn = document.getElementById(`${tool}-dl-zip`);
     if(zipBtn) {
         zipBtn.onclick = async () => {
@@ -331,35 +339,75 @@ window.activeZips = { minify: null, packer: null, crypto: null, custom: null, co
         };
     }
 });
-</script>
 
-<script>
-    // Theme Toggle Logic
-    const themeBtn = document.getElementById('theme-toggle-btn');
-    const htmlTag = document.documentElement;
-    
-    // Check if user previously saved a theme preference
-    const savedTheme = localStorage.getItem('app_theme');
-    if (savedTheme === 'light') {
-        htmlTag.setAttribute('data-theme', 'light');
-        if (themeBtn) themeBtn.textContent = '☀️';
-    }
+// Vault Logic
+function togglePwd(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
 
-    // Toggle button click event
-    if (themeBtn) {
-        themeBtn.onclick = () => {
-            const currentTheme = htmlTag.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                htmlTag.removeAttribute('data-theme');
-                localStorage.setItem('app_theme', 'dark');
-                themeBtn.textContent = '🌙';
-            } else {
-                htmlTag.setAttribute('data-theme', 'light');
-                localStorage.setItem('app_theme', 'light');
-                themeBtn.textContent = '☀️';
-            }
-        };
+function renderVault() {
+    const list = document.getElementById('vault-list');
+    const vault = JSON.parse(localStorage.getItem('dev_vault_passwords') || '[]');
+    if (vault.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px;">Vault is empty. Generated passwords will appear here.</div>'; return; }
+    list.innerHTML = vault.map(v => `<div style="background:var(--surface-light); padding:10px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:5px;">${v.date} - ${v.tool}</div>
+        <div style="font-family:monospace; color:var(--accent-primary); font-size:14px; word-break:break-all;">${v.pass}</div>
+    </div>`).reverse().join('');
+}
+
+function clearVault() {
+    if(confirm('Delete all saved passwords from this browser?')) {
+        localStorage.removeItem('dev_vault_passwords');
+        renderVault();
     }
+}
+
+function saveToVault(pwd, toolName) {
+    let vault = JSON.parse(localStorage.getItem('dev_vault_passwords') || '[]');
+    vault.push({ date: new Date().toLocaleString(), tool: toolName, pass: pwd });
+    localStorage.setItem('dev_vault_passwords', JSON.stringify(vault));
+    renderVault();
+}
+
+function handleGenClick(e, inputId, toolName) {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let pwd = ""; for(let i=0; i<16; i++) pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+    const passInput = document.getElementById(inputId);
+    passInput.type = 'text'; passInput.value = pwd;
+    saveToVault(pwd, toolName);
+    navigator.clipboard.writeText(pwd).then(() => {
+        const orig = e.target.innerHTML;
+        e.target.innerHTML = "✔ Copied!";
+        window.logMsg(toolName === 'AES Encrypter' ? 'crypto' : 'custom', 'Password generated and saved to Vault.', 'success');
+        setTimeout(() => { e.target.innerHTML = orig; }, 2000);
+    });
+}
+
+const cryptoGenBtn = document.getElementById('crypto-gen-btn');
+if(cryptoGenBtn) cryptoGenBtn.onclick = (e) => handleGenClick(e, 'crypto-pass', 'AES Encrypter');
+
+const customGenBtn = document.getElementById('custom-gen-btn');
+if(customGenBtn) customGenBtn.onclick = (e) => handleGenClick(e, 'custom-pass', 'Custom Cipher');
+
+const vaultBtn = document.getElementById('open-vault-btn');
+const vaultModal = document.getElementById('vault-modal');
+const closeVaultBtn = document.getElementById('close-vault-btn');
+if(vaultBtn) vaultBtn.onclick = () => { renderVault(); vaultModal.classList.add('active'); };
+if(closeVaultBtn) closeVaultBtn.onclick = () => vaultModal.classList.remove('active');
+window.addEventListener('click', (e) => { if(e.target === vaultModal) vaultModal.classList.remove('active'); });
+
+// Theme Logic
+const themeBtn = document.getElementById('theme-toggle-btn');
+const htmlTag = document.documentElement;
+const savedTheme = localStorage.getItem('app_theme');
+if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
+if (themeBtn) {
+    themeBtn.onclick = () => {
+        if (htmlTag.getAttribute('data-theme') === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; } 
+        else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; }
+    };
+}
 </script>
 
 <script src="libs/minify.js"></script>
@@ -369,6 +417,5 @@ window.activeZips = { minify: null, packer: null, crypto: null, custom: null, co
 <script src="libs/copyright.js"></script>
 <script src="libs/converter.js"></script>
 <script src="libs/vault.js"></script>
-
 </body>
 </html>

@@ -9,9 +9,7 @@
     .guide-content { background: var(--surface-dark); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); font-size: 16px; line-height: 1.6; }
     .guide-content h2 { color: var(--accent-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
     .guide-content h3 { color: var(--text-primary); margin-top: 25px; }
-    
     .keyboard-key { display: inline-block; background: var(--surface-light); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; color: var(--text-secondary); box-shadow: 0 2px 0 var(--border-color); margin: 0 2px; }
-    
     table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
     th, td { padding: 12px; border: 1px solid var(--border-color); text-align: left; }
     th { background: var(--surface-light); color: var(--text-primary); }
@@ -23,11 +21,23 @@
 
 <div class="container" style="max-width: 900px;">
 
-    <div class="app-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px;">
-        <a href="index.html" class="header-btn" style="text-decoration: none; display: flex; align-items: center; height: 32px; box-sizing: border-box;">⬅ Back to Main Suite</a>
-        <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">💻 Code Editor Guide</span>
-        <div style="width: 150px; display: flex; justify-content: flex-end;">
-            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">💻 Code Editor Guide</span>
+        </div>
+        
+        <div class="header-actions">
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="index.html" class="dropdown-link">🏠 Main Suite</a>
+                    <a href="workspace.html" class="dropdown-link">💻 Code Workspace</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="scraper.html" class="dropdown-link">🕸️ Data Scraper</a>
+                    <a href="notes.html" class="dropdown-link">📝 Dev Notes</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
         </div>
     </div>
 
@@ -133,12 +143,11 @@
     const themeBtn = document.getElementById('theme-toggle-btn');
     const htmlTag = document.documentElement;
     const savedTheme = localStorage.getItem('app_theme');
-    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️'; }
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
     if (themeBtn) {
         themeBtn.onclick = () => {
-            const currentTheme = htmlTag.getAttribute('data-theme');
-            if (currentTheme === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙'; } 
-            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️'; }
+            if (htmlTag.getAttribute('data-theme') === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; }
         };
     }
 </script>

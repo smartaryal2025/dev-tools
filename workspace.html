@@ -6,80 +6,65 @@
 <title>Code Workspace - Pro Developer Tools</title>
 <link rel="stylesheet" href="libs/style.css">
 <style>
-    /* 1. Global Page Lock */
-    html, body { height: 100vh !important; max-height: 100vh !important; margin: 0; overflow: hidden !important; background: var(--bg-end); }
-    
-    /* 2. Main Grid Layout */
-    .workspace-container { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; padding: 20px; box-sizing: border-box; max-width: 1800px; margin: 0 auto; width: 100%; min-width: 0; }
-    
-    /* 3. Toolbar Overrides */
-    .app-header { margin-bottom: 20px !important; }
-    .editor-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; align-items: center; background: var(--surface-dark); padding: 10px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); }
-    .editor-toolbar button { height: 35px; padding: 0 15px; font-size: 13px; margin: 0; }
+    html, body { margin: 0; background: var(--bg-end); overflow: hidden; height: 100vh; }
+    .workspace-container { display: flex; flex-direction: column; height: 100vh; padding: 20px; box-sizing: border-box; width: 100%; }
+    .editor-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; align-items: center; background: var(--surface-dark); padding: 10px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
     .toolbar-divider { width: 1px; height: 25px; background: var(--border-color); margin: 0 5px; }
-    
-    /* 4. WRAPPER GRID (Added min-width: 0 to force Flexbox to behave) */
-    .editor-wrapper { display: grid; grid-template-rows: 1fr auto; min-height: 0; min-width: 0; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
-    
-    /* 5. MONACO CONTAINER */
-    .editor-body { display: block; min-height: 0; min-width: 0; background: var(--bg-start); }
-    #monaco-container { width: 100%; height: 100%; min-height: 0; min-width: 0; overflow: hidden; }
-    
-    /* 6. Status Bar */
-    .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--surface-light); padding: 5px 15px; font-family: monospace; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border-color); width: 100%; box-sizing: border-box; overflow: hidden; }
-    
-    /* 7. Truncation Magic */
-    #file-name-display { flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 15px; }
+    .editor-wrapper { flex-grow: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
+    .editor-body { flex-grow: 1; min-height: 0; min-width: 0; background: var(--bg-start); position: relative; }
+    #monaco-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+    .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--surface-light); padding: 5px 15px; font-family: monospace; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border-color); }
+    #file-name-display { flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .status-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; white-space: nowrap; }
+    #language-selector { background: transparent; color: var(--accent-primary); border: none; outline: none; cursor: pointer; font-family: monospace; font-size: 12px; font-weight: bold; width: auto; padding: 0; }
     
-    .hidden-input { display: none; }
-    #language-selector { background: transparent; color: var(--accent-primary); border: none; outline: none; cursor: pointer; font-family: monospace; font-size: 12px; font-weight: bold; }
-    #language-selector option { background: var(--surface-dark); color: var(--text-primary); }
+    @media screen and (max-width: 768px) {
+        html, body { overflow: auto; height: auto; }
+        .workspace-container { height: auto; min-height: 100vh; }
+        .editor-wrapper { min-height: 500px; }
+    }
 </style>
 </head>
 <body>
-
 <div class="workspace-container">
-    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; gap: 15px;">
-        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-            <a href="index.html" class="header-btn" style="text-decoration: none; height: 32px; box-sizing: border-box; display: inline-flex; align-items: center;">⬅ Back to Main Suite</a>
-            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">💻 Code Editor Workspace</span>
-            <a href="workspace-guide.html" style="font-size: 13px; color: var(--accent-primary); text-decoration: none; font-weight: bold;">(❓ Read Guide)</a>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <a href="workspace.html" class="header-btn" style="text-decoration: none;">💻 Code Workspace</a>
-            <a href="editor.html" class="header-btn" style="text-decoration: none;">⚖️ Diff Editor</a>
-            <a href="scraper.html" class="header-btn" style="text-decoration: none;">🕸️ Data Scraper</a>
-            <a href="notes.html" class="header-btn" style="text-decoration: none;">📝 Dev Notes</a>
-            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+    
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
+        <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">💻 Code Workspace</span>
+        <div class="header-actions">
+            <a href="workspace-guide.html" class="header-btn" style="text-decoration: none; border-color: var(--color-teal); color: var(--color-teal);">❓ Guide</a>
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="index.html" class="dropdown-link">🏠 Main Suite</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="scraper.html" class="dropdown-link">🕸️ Data Scraper</a>
+                    <a href="notes.html" class="dropdown-link">📝 Dev Notes</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
         </div>
     </div>
 
     <div class="editor-toolbar">
-        <input type="file" id="file-input" class="hidden-input" accept=".js,.css,.html,.txt,.json,.xml">
-        <button id="btn-open" style="background: var(--surface-light); color: var(--text-primary); border: 1px solid var(--border-color);">📂 Open File</button>
-        <button id="btn-save" style="background: var(--color-success); color: var(--surface-dark);">💾 Save (Overwrite)</button>
-        <button id="btn-save-as" style="background: var(--accent-primary); color: var(--surface-dark);">📝 Save As...</button>
+        <input type="file" id="file-input" style="display: none;" accept=".js,.css,.html,.txt,.json,.xml">
+        <button id="btn-open">📂 Open File</button>
+        <button id="btn-save" style="color: var(--color-success); border-color: rgba(35, 134, 54, 0.4);">💾 Save (Overwrite)</button>
+        <button id="btn-save-as" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4);">📝 Save As...</button>
         <div class="toolbar-divider"></div>
-        <button id="btn-copy" class="copy-btn" style="background: var(--surface-light); color: var(--text-primary); border: 1px solid var(--border-color);">📋 Copy</button>
-        <button id="btn-clear" class="btn-clear" style="border: 1px solid var(--border-color);">🗑️ Clear</button>
-        <button id="btn-fullscreen" style="margin-left: auto; background: var(--bg-start); color: var(--text-primary); border: 1px solid var(--border-color);">⛶ Fullscreen</button>
+        <button id="btn-copy">📋 Copy</button>
+        <button id="btn-clear" class="btn-clear">🗑️ Clear</button>
+        <button id="btn-fullscreen" style="margin-left: auto;">⛶ Fullscreen</button>
         <span style="margin-left: 10px; font-size: 13px; color: var(--color-success);" id="editor-toast"></span>
     </div>
 
     <div class="editor-wrapper">
         <div class="editor-body"><div id="monaco-container"></div></div>
-        
         <div class="status-bar">
             <span id="file-name-display">untitled.js</span>
-            
             <div class="status-controls">
                 <select id="language-selector">
-                    <option value="javascript">JavaScript</option>
-                    <option value="html">HTML</option>
-                    <option value="css">CSS</option>
-                    <option value="json">JSON</option>
-                    <option value="plaintext">Plain Text</option>
+                    <option value="javascript">JavaScript</option><option value="html">HTML</option>
+                    <option value="css">CSS</option><option value="json">JSON</option><option value="plaintext">Plain Text</option>
                 </select>
                 <span>UTF-8 | <span id="cursor-position">Ln 1, Col 1</span></span>
             </div>
@@ -88,27 +73,34 @@
 </div>
 
 <script>
+    // Theme Toggler with Instant Monaco Update
     const themeBtn = document.getElementById('theme-toggle-btn');
     const htmlTag = document.documentElement;
     const savedTheme = localStorage.getItem('app_theme');
-    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️'; }
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
+    
     if (themeBtn) {
         themeBtn.onclick = () => {
-            const currentTheme = htmlTag.getAttribute('data-theme');
-            if (currentTheme === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙'; } 
-            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️'; }
-            if (window.editor) monaco.editor.setTheme(currentTheme === 'light' ? 'vs-dark' : 'vs');
+            const isDark = htmlTag.getAttribute('data-theme') !== 'light';
+            if (isDark) { 
+                htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; 
+                if (window.editor) monaco.editor.setTheme('vs');
+            } else { 
+                htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; 
+                if (window.editor) monaco.editor.setTheme('vs-dark');
+            }
         };
     }
 </script>
 
 <script>
+    // 🚀 RESTORED: Intelligent Monaco Loading Engine
     function bootMonaco(basePath) {
         require.config({ paths: { 'vs': basePath } });
         require(['vs/editor/editor.main'], function() {
             const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
             window.editor = monaco.editor.create(document.getElementById('monaco-container'), {
-                value: '// Code Workspace\n',
+                value: '// Welcome to Pro Workspace\nconsole.log(\'Ready\');',
                 language: 'javascript',
                 theme: isDark ? 'vs-dark' : 'vs',
                 automaticLayout: true,

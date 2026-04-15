@@ -6,101 +6,85 @@
 <title>Offline Web Scraper - Pro Developer Tools</title>
 <link rel="stylesheet" href="libs/style.css">
 <style>
-    /* Scraper-Specific Styles */
     .rule-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: var(--surface-light); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
     .rule-row input, .rule-row select { height: 35px; margin: 0; }
-    .btn-remove-rule { background: var(--color-error); color: white; border: none; border-radius: 4px; padding: 0 10px; height: 35px; cursor: pointer; font-weight: bold; }
-    .btn-add-rule { background: var(--surface-light); color: var(--accent-primary); border: 1px dashed var(--accent-primary); width: 100%; padding: 10px; border-radius: var(--radius-md); cursor: pointer; font-weight: bold; margin-bottom: 15px; }
-    .btn-add-rule:hover { background: rgba(56, 189, 248, 0.1); }
+    .btn-remove-rule { background: var(--color-error); color: white; border: none; border-radius: 8px; padding: 0 10px; height: 35px; cursor: pointer; font-weight: bold; transition: all 0.2s ease; }
+    .btn-remove-rule:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-add-rule { background: var(--surface-light); color: var(--accent-primary); border: 1px dashed var(--accent-primary); width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; transition: all 0.2s ease; }
+    .btn-add-rule:hover { background: rgba(47, 129, 247, 0.1); transform: translateY(-1px); }
+    .modern-split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media screen and (max-width: 768px) {
+        .modern-split-grid { display: flex; flex-direction: column; width: 100%; overflow-x: hidden; }
+        .container { padding: 10px; max-width: 100vw; overflow-x: hidden; }
+        .panel { max-width: 100%; overflow-x: hidden; box-sizing: border-box; }
+        #scrape-output { max-width: 100%; box-sizing: border-box; }
+    }
 </style>
 </head>
 <body>
-
 <div class="container" style="max-width: 1500px;">
 
-    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; gap: 15px;">
-        
-        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-            <a href="index.html" class="header-btn" style="text-decoration: none; height: 32px; box-sizing: border-box; display: inline-flex; align-items: center;">⬅ Back to Main Suite</a>
-            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">🕸️ Offline Data Scraper</span>
-            <a href="scraper-guide.html" style="font-size: 13px; color: var(--accent-primary); text-decoration: none; font-weight: bold;">(❓ Read Guide)</a>
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+        <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">🕸️ Offline Data Scraper</span>
+        <div class="header-actions">
+            <a href="scraper-guide.html" class="header-btn" style="text-decoration: none; border-color: var(--color-teal); color: var(--color-teal);">❓ Guide</a>
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="index.html" class="dropdown-link">🏠 Main Suite</a>
+                    <a href="workspace.html" class="dropdown-link">💻 Code Workspace</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="notes.html" class="dropdown-link">📝 Dev Notes</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
         </div>
-        
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <a href="workspace.html" class="header-btn" style="text-decoration: none;">💻 Code Workspace</a>
-            <a href="editor.html" class="header-btn" style="text-decoration: none;">⚖️ Diff Editor</a>
-            <a href="scraper.html" class="header-btn" style="text-decoration: none;">🕸️ Data Scraper</a>
-            <a href="notes.html" class="header-btn" style="text-decoration: none;">📝 Dev Notes</a>
-            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
-        </div>
-        
     </div>
 
-    <div class="grid-layout">
-        
+    <div class="modern-split-grid">
         <div style="display: flex; flex-direction: column; gap: 20px;">
             <div class="panel">
-                <h3 class="text-teal">1. Input Target HTML</h3>
-                <textarea id="scrape-html" class="code-area" style="height: 200px;" placeholder="Paste raw HTML source code here (e.g., <div class='product-list'>...</div>)"></textarea>
+                <h3 class="text-teal mb-15">1. Input Target HTML</h3>
+                <textarea id="scrape-html" class="code-area" style="height: 200px;" placeholder="Paste raw HTML source code here..."></textarea>
             </div>
-
             <div class="panel">
-                <h3 class="text-warning">2. Extraction Rules</h3>
-                
-                <label style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">Parent Item Selector (e.g., .product-card)</label>
+                <h3 class="text-warning mb-15">2. Extraction Rules</h3>
+                <label style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; display: block;">Parent Selector (e.g., .product-card)</label>
                 <input type="text" id="parent-selector" class="custom-input mb-15" placeholder="Leave blank to search entire document">
-
-                <div id="rules-container">
-                    </div>
-                
+                <div id="rules-container"></div>
                 <button id="btn-add-rule" class="btn-add-rule">➕ Add Data Field</button>
-                
-                <button id="btn-extract" style="background: var(--color-success); color: var(--surface-dark); width: 100%; height: 45px; border: none; border-radius: var(--radius-md); font-weight: bold; cursor: pointer; font-size: 15px;">🚀 Run Extraction</button>
+                <div class="action-row" style="margin-top: 0;">
+                    <button id="btn-extract" style="background: var(--color-success); color: #fff; width: 100%; height: 45px; border-color: var(--color-success); font-size: 15px;">🚀 Run Extraction</button>
+                </div>
             </div>
         </div>
 
-        <div class="panel" style="height: 100%;">
-            <h3 class="text-accent">3. Extracted Data Output</h3>
-            <textarea id="scrape-output" class="code-area" readonly style="flex-grow: 1; min-height: 400px; margin-bottom: 15px;" placeholder="JSON results will appear here..."></textarea>
+        <div class="panel" style="display: flex; flex-direction: column; height: auto; min-height: 500px;">
+            <h3 class="text-accent mb-15">3. Extracted Data Output</h3>
+            <textarea id="scrape-output" class="code-area" readonly style="flex-grow: 1; margin-bottom: 15px;" placeholder="JSON results will appear here..."></textarea>
             
-            <div style="display: flex; gap: 10px;">
-                <button id="btn-copy-json" class="copy-btn" style="margin: 0; background: var(--surface-light) !important; color: var(--text-primary) !important; border: 1px solid var(--border-color);">📋 Copy JSON</button>
-                <button id="btn-dl-json" style="background: var(--accent-primary); color: var(--surface-dark); border: none; border-radius: var(--radius-md); flex: 1; cursor: pointer; font-weight: bold;">💾 Download JSON</button>
-                <button id="btn-dl-csv" style="background: var(--color-warning); color: var(--surface-dark); border: none; border-radius: var(--radius-md); flex: 1; cursor: pointer; font-weight: bold;">📊 Download CSV</button>
+            <div class="action-row" style="width: 100%; display: flex; gap: 10px;">
+                <button id="btn-copy-json" style="flex: 1;">📋 Copy JSON</button>
+                <button id="btn-dl-json" style="background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); flex: 1;">💾 DL JSON</button>
+                <button id="btn-dl-csv" style="background: var(--color-warning); color: #fff; border-color: var(--color-warning); flex: 1;">📊 DL CSV</button>
             </div>
             <div id="scrape-log-area" class="log-area" style="margin-top: 15px;"><div>System Ready. DOM Parser loaded.</div></div>
         </div>
-
     </div>
 </div>
 
 <script>
-    // Theme Toggle Logic
     const themeBtn = document.getElementById('theme-toggle-btn');
     const htmlTag = document.documentElement;
-    
     const savedTheme = localStorage.getItem('app_theme');
-    if (savedTheme === 'light') {
-        htmlTag.setAttribute('data-theme', 'light');
-        if (themeBtn) themeBtn.textContent = '☀️';
-    }
-
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
     if (themeBtn) {
         themeBtn.onclick = () => {
-            const currentTheme = htmlTag.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                htmlTag.removeAttribute('data-theme');
-                localStorage.setItem('app_theme', 'dark');
-                themeBtn.textContent = '🌙';
-            } else {
-                htmlTag.setAttribute('data-theme', 'light');
-                localStorage.setItem('app_theme', 'light');
-                themeBtn.textContent = '☀️';
-            }
+            if (htmlTag.getAttribute('data-theme') === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; }
         };
     }
 </script>
-
 <script src="libs/scraper.js"></script>
 </body>
 </html>

@@ -6,9 +6,8 @@
 <title>Scraper Guide - Pro Developer Tools</title>
 <link rel="stylesheet" href="libs/style.css">
 <style>
-    /* Guide-specific typography improvements */
-    .guide-content { line-height: 1.6; font-size: 15px; color: var(--text-primary); }
-    .guide-content h3 { margin-top: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    .guide-content { line-height: 1.6; font-size: 15px; color: var(--text-primary); background: var(--surface-dark); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); }
+    .guide-content h3 { margin-top: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); }
     .guide-content p { margin-bottom: 15px; }
     .guide-content ul { margin-bottom: 20px; padding-left: 20px; }
     .guide-content li { margin-bottom: 8px; }
@@ -23,17 +22,29 @@
 <body>
 
 <div class="container" style="max-width: 900px;">
-    <div class="app-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px;">
-        <a href="index.html" class="header-btn" style="text-decoration: none; display: flex; align-items: center; height: 32px; box-sizing: border-box;">⬅ Back to Main Suite</a>
-        <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📖 Scraper Documentation</span>
-        <div style="width: 150px; display: flex; justify-content: flex-end;">
-            <button id="theme-toggle-btn" class="header-btn" style="border-radius: 50%; padding: 0 10px; font-size: 16px;" title="Toggle Theme">🌙</button>
+    
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📖 Scraper Guide</span>
         </div>
         
+        <div class="header-actions">
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="index.html" class="dropdown-link">🏠 Main Suite</a>
+                    <a href="workspace.html" class="dropdown-link">💻 Code Workspace</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="scraper.html" class="dropdown-link">🕸️ Data Scraper</a>
+                    <a href="notes.html" class="dropdown-link">📝 Dev Notes</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
+        </div>
     </div>
 
-    <div class="panel guide-content">
-        <h2 class="text-teal" style="text-align: center; font-size: 28px; margin-bottom: 10px;">How to Use the Offline Web Scraper</h2>
+    <div class="guide-content">
+        <h2 class="text-teal" style="text-align: center; font-size: 28px; margin-bottom: 10px; margin-top: 0;">How to Use the Offline Web Scraper</h2>
         <p style="text-align: center; color: var(--text-secondary); margin-bottom: 40px;">Extract structured JSON or CSV data from any website without writing Python scripts.</p>
 
         <div class="step-box">
@@ -91,31 +102,16 @@
 </div>
 
 <script>
-    // Theme Toggle Logic
     const themeBtn = document.getElementById('theme-toggle-btn');
     const htmlTag = document.documentElement;
-    
     const savedTheme = localStorage.getItem('app_theme');
-    if (savedTheme === 'light') {
-        htmlTag.setAttribute('data-theme', 'light');
-        if (themeBtn) themeBtn.textContent = '☀️';
-    }
-
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
     if (themeBtn) {
         themeBtn.onclick = () => {
-            const currentTheme = htmlTag.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                htmlTag.removeAttribute('data-theme');
-                localStorage.setItem('app_theme', 'dark');
-                themeBtn.textContent = '🌙';
-            } else {
-                htmlTag.setAttribute('data-theme', 'light');
-                localStorage.setItem('app_theme', 'light');
-                themeBtn.textContent = '☀️';
-            }
+            if (htmlTag.getAttribute('data-theme') === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; }
         };
     }
 </script>
-
 </body>
 </html>
