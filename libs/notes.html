@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Notes - Pro Developer Tools</title>
+<link rel="icon" type="image/png" href="libs/dev-512.png">
+<link rel="stylesheet" href="libs/style.css">
+<style>
+    html, body { margin: 0; background: var(--bg-end); height: 100vh; overflow: hidden; }
+    .workspace-container { display: flex; flex-direction: column; height: 100vh; padding: 20px; box-sizing: border-box; width: 100%; }
+    
+    /* 🚀 REFINED TOOLBAR LAYOUT */
+    .editor-toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; background: var(--surface-dark); padding: 12px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+    .toolbar-status-row { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+    .toolbar-action-row { display: flex; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 10px; }
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    
+    .editor-toolbar button { white-space: nowrap; flex-shrink: 0; min-height: 36px; padding: 0 15px; } 
+
+    /* 🚀 FLOATING SWAP BUTTON (Saves Layout Space) */
+    .modern-split-grid { flex-grow: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-height: 0; align-items: stretch; position: relative; }
+    
+    .btn-swap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; width: 42px; height: 42px; border-radius: 50%; background: var(--surface-light); border: 1px solid var(--border-color); font-size: 18px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.25); color: var(--text-primary); display: flex; align-items: center; justify-content: center; padding: 0 !important; }
+    .btn-swap:hover { transform: translate(-50%, -50%) scale(1.1); border-color: var(--accent-primary); color: var(--accent-primary); }
+
+    .grid-col { display: flex; flex-direction: column; min-height: 0; min-width: 0; height: 100%; }
+    .code-area, .preview-area { flex-grow: 1; width: 100%; margin: 0; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--surface-dark); overflow-y: auto; font-family: monospace; font-size: 13px; color: var(--text-primary); outline: none; box-sizing: border-box; resize: none; }
+    .preview-area { background: var(--surface-light); font-family: inherit; font-size: 15px; }
+    
+    .preview-area h1, .preview-area h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    .preview-area code { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--color-warning); }
+    .preview-area pre { background: #000; padding: 15px; border-radius: 8px; overflow-x: auto; color: #fff; }
+    
+    /* Bulletproof Table CSS */
+    .preview-area table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    .preview-area th, .preview-area td { padding: 10px; border: 1px solid var(--border-color); vertical-align: middle !important; text-align: left; }
+    .preview-area th { background: var(--surface-dark); font-weight: bold; }
+    .preview-area td > p, .preview-area th > p { margin: 0 !important; padding: 0 !important; }
+    
+    #rich-input:empty:before { content: attr(placeholder); color: var(--text-secondary); pointer-events: none; display: block; }
+
+    /* Mobile overrides */
+    @media screen and (max-width: 768px) {
+        html, body { overflow: auto; height: auto; }
+        .workspace-container { height: auto; }
+        .modern-split-grid { display: flex; flex-direction: column; gap: 24px; }
+        .code-area, .preview-area { min-height: 400px; }
+        .btn-swap { transform: translate(-50%, -50%) rotate(90deg); } /* Rotates arrow on mobile */
+        .btn-swap:hover { transform: translate(-50%, -50%) rotate(90deg) scale(1.1); }
+    }
+</style>
+</head>
+<body>
+<div class="workspace-container">
+    
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📝 Dev Notes</span>
+        </div>
+
+        <div class="header-actions">
+            <a href="notes-guide.html" class="header-btn" style="text-decoration: none; border-color: var(--color-teal); color: var(--color-teal);">❓ Guide</a>
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="index.html" class="dropdown-link">🏠 Main Suite</a>
+                    <a href="workspace.html" class="dropdown-link">💻 Code Workspace</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="scraper.html" class="dropdown-link">🕸️ Data Scraper</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
+        </div>
+    </div>
+
+    <!-- REFINED SPLIT TOOLBAR -->
+    <div class="editor-toolbar">
+        <input type="file" id="file-input" style="display: none;" accept=".md,.txt,.docx,.html,.htm">
+        
+        <!-- Status Info Row -->
+        <div class="toolbar-status-row">
+            <span id="mode-status" style="font-size: 14px; font-weight: bold; color: var(--accent-primary);">Mode: Markdown ➔ HTML</span>
+            <span style="font-size: 13px; color: var(--color-warning);">Live Auto-Save Enabled</span>
+        </div>
+
+        <!-- Mode 1 Actions -->
+        <div id="toolbar-mode1" class="toolbar-action-row">
+            <div class="toolbar-group">
+                <button id="btn-open-md" style="border-color: var(--border-color);">📂 Open .MD / .TXT</button>
+                <button id="btn-save-md" style="color: var(--color-success); border-color: rgba(35, 134, 54, 0.4);">💾 Download .MD</button>
+            </div>
+            <div class="toolbar-group">
+                <button id="btn-copy-html" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4);">📋 Copy HTML Preview</button>
+                <button id="btn-clear-1" class="btn-clear">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <!-- Mode 2 Actions -->
+        <div id="toolbar-mode2" class="toolbar-action-row" style="display: none;">
+            <div class="toolbar-group">
+                <button id="btn-open-rich" style="border-color: var(--border-color);">📂 Import .DOCX / .HTML</button>
+                <button id="btn-save-converted" style="color: var(--color-warning); border-color: rgba(210, 153, 34, 0.4);">💾 Download Converted .MD</button>
+            </div>
+            <div class="toolbar-group">
+                <button id="btn-copy-md" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4);">📋 Copy Markdown Code</button>
+                <button id="btn-clear-2" class="btn-clear">🗑️ Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DUAL WINDOWS WITH FLOATING BUTTON -->
+    <div class="modern-split-grid">
+        
+        <!-- Center Floating Swap Button -->
+        <button id="btn-swap-mode" class="btn-swap" title="Swap Conversion Mode">🔄</button>
+
+        <div class="grid-col">
+            <textarea id="notes-input" class="code-area" placeholder="# Enter Markdown Here..."></textarea>
+            <div id="rich-input" class="preview-area" contenteditable="true" placeholder="Paste rich text from MS Word, websites, or raw HTML source here..." style="display: none;"></div>
+        </div>
+
+        <div class="grid-col">
+            <div id="notes-preview" class="preview-area"><h1>Preview Output</h1></div>
+            <textarea id="md-output" class="code-area" readonly placeholder="Clean Markdown will generate here automatically..." style="display: none;"></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Core Engine Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+<script src="https://unpkg.com/turndown-plugin-gfm/dist/turndown-plugin-gfm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+
+<script>
+    const mdInput = document.getElementById('notes-input');
+    const htmlPreview = document.getElementById('notes-preview');
+    const richInput = document.getElementById('rich-input');
+    const mdOutput = document.getElementById('md-output');
+    const fileInput = document.getElementById('file-input');
+    const modeStatus = document.getElementById('mode-status');
+    
+    const turndownService = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', emDelimiter: '*' });
+    turndownService.use(turndownPluginGfm.gfm);
+    turndownService.remove(['style', 'script', 'meta', 'title', 'noscript']);
+
+    let currentMode = 'md2html';
+
+    // 🚀 SWAP MODE LOGIC
+    document.getElementById('btn-swap-mode').onclick = () => {
+        if (currentMode === 'md2html') {
+            currentMode = 'html2md';
+            
+            richInput.innerHTML = htmlPreview.innerHTML;
+            mdOutput.value = mdInput.value;
+            
+            mdInput.style.display = 'none';
+            htmlPreview.style.display = 'none';
+            richInput.style.display = 'block';
+            mdOutput.style.display = 'block';
+            
+            document.getElementById('toolbar-mode1').style.display = 'none';
+            document.getElementById('toolbar-mode2').style.display = 'flex';
+            
+            modeStatus.innerHTML = 'Mode: HTML/Word ➔ Markdown';
+            modeStatus.style.color = 'var(--color-warning)';
+            fileInput.accept = ".docx,.html,.htm,.md,.txt";
+            
+        } else {
+            currentMode = 'md2html';
+            
+            mdInput.value = mdOutput.value;
+            htmlPreview.innerHTML = richInput.innerHTML;
+            
+            mdInput.style.display = 'block';
+            htmlPreview.style.display = 'block';
+            richInput.style.display = 'none';
+            mdOutput.style.display = 'none';
+            
+            document.getElementById('toolbar-mode1').style.display = 'flex';
+            document.getElementById('toolbar-mode2').style.display = 'none';
+            
+            modeStatus.innerHTML = 'Mode: Markdown ➔ HTML';
+            modeStatus.style.color = 'var(--accent-primary)';
+            fileInput.accept = ".md,.txt";
+        }
+    };
+
+    // 🚀 MODE 1: MD to HTML
+    const savedNotes = localStorage.getItem('dev_notes_md');
+    if (savedNotes) { mdInput.value = savedNotes; htmlPreview.innerHTML = marked.parse(savedNotes); }
+
+    mdInput.addEventListener('input', () => { 
+        htmlPreview.innerHTML = marked.parse(mdInput.value); 
+        localStorage.setItem('dev_notes_md', mdInput.value);
+    });
+
+    // 🚀 MODE 2: Rich/HTML to MD
+    function convertRichToMd() {
+        let content = richInput.innerHTML;
+        if(richInput.innerText.trim().startsWith('<') && richInput.innerText.trim().endsWith('>')) {
+            content = richInput.innerText; 
+        }
+        mdOutput.value = turndownService.turndown(content);
+        localStorage.setItem('dev_notes_rich', richInput.innerHTML);
+    }
+
+    const savedRich = localStorage.getItem('dev_notes_rich');
+    if (savedRich) { richInput.innerHTML = savedRich; convertRichToMd(); }
+
+    richInput.addEventListener('input', convertRichToMd);
+
+    // 🚀 MS WORD PASTE SANITIZER
+    richInput.addEventListener('paste', (e) => {
+        const htmlData = (e.clipboardData || window.clipboardData).getData('text/html');
+        if (htmlData) {
+            e.preventDefault();
+            
+            let cleanHtml = htmlData
+                .replace(/<!--[\s\S]*?-->/g, '')
+                .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+                .replace(/<meta[^>]*>/gi, '')
+                .replace(/<link[^>]*>/gi, '');
+
+            document.execCommand('insertHTML', false, cleanHtml);
+            convertRichToMd();
+        }
+    });
+
+    // 🚀 UNIVERSAL FILE LOADER
+    document.getElementById('btn-open-md').onclick = () => fileInput.click();
+    document.getElementById('btn-open-rich').onclick = () => fileInput.click();
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (currentMode === 'html2md' && file.name.endsWith('.docx')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                mammoth.convertToHtml({arrayBuffer: event.target.result}).then(result => {
+                    richInput.innerHTML = result.value;
+                    convertRichToMd();
+                }).catch(err => alert("Error parsing DOCX file."));
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                if (currentMode === 'md2html') {
+                    mdInput.value = evt.target.result;
+                    htmlPreview.innerHTML = marked.parse(mdInput.value);
+                    localStorage.setItem('dev_notes_md', mdInput.value);
+                } else {
+                    richInput.innerHTML = evt.target.result;
+                    if(file.name.endsWith('.html') || file.name.endsWith('.htm')) { richInput.innerText = evt.target.result; }
+                    convertRichToMd();
+                }
+            };
+            reader.readAsText(file);
+        }
+        this.value = '';
+    });
+
+    // Buttons
+    document.getElementById('btn-clear-1').onclick = () => { if(confirm("Clear Markdown notes?")) { mdInput.value = ''; htmlPreview.innerHTML = ''; localStorage.removeItem('dev_notes_md'); }};
+    document.getElementById('btn-clear-2').onclick = () => { if(confirm("Clear converter workspace?")) { richInput.innerHTML = ''; mdOutput.value = ''; localStorage.removeItem('dev_notes_rich'); }};
+
+    document.getElementById('btn-save-md').onclick = () => triggerDownload(mdInput.value, 'note.md');
+    document.getElementById('btn-save-converted').onclick = () => triggerDownload(mdOutput.value, 'converted_note.md');
+
+    function triggerDownload(content, filename) {
+        if (!content) return;
+        const blob = new Blob([content], { type: 'text/markdown' });
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    document.getElementById('btn-copy-html').onclick = (e) => copyToClipboard(e, htmlPreview.innerHTML);
+    document.getElementById('btn-copy-md').onclick = (e) => copyToClipboard(e, mdOutput.value);
+
+    function copyToClipboard(e, content) {
+        if (!content || content.trim() === '') return;
+        navigator.clipboard.writeText(content).then(() => {
+            const orig = e.target.innerHTML;
+            e.target.innerHTML = "✔ Copied!";
+            setTimeout(() => { e.target.innerHTML = orig; }, 1500);
+        });
+    }
+
+    // Theme Logic
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            if (htmlTag.getAttribute('data-theme') === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; }
+        };
+    }
+</script>
+</body>
+</html>

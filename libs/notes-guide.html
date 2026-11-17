@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Notes Guide - Pro Developer Tools</title>
+<link rel="icon" type="image/png" href="libs/dev-512.png">
+<link rel="stylesheet" href="libs/style.css">
+<style>
+    .guide-content { background: var(--surface-dark); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-soft); font-size: 16px; line-height: 1.6; }
+    .guide-content h2 { color: var(--accent-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; }
+    .guide-content h3 { color: var(--text-primary); margin-top: 25px; }
+    
+    .guide-content pre { background: var(--bg-start); padding: 15px; border-radius: var(--radius-md); overflow-x: auto; border: 1px solid var(--border-color); font-family: 'Consolas', monospace; font-size: 14px; }
+    .guide-content code { font-family: 'Consolas', monospace; color: var(--color-warning); background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 4px; font-size: 14px; }
+    .guide-content pre code { background: transparent; padding: 0; color: var(--text-primary); }
+    
+    .keyboard-key { display: inline-block; background: var(--surface-light); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; color: var(--text-secondary); box-shadow: 0 2px 0 var(--border-color); margin: 0 2px; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; border: 1px solid var(--border-color); text-align: left; }
+    th { background: var(--surface-light); color: var(--text-primary); }
+
+    .cheat-sheet-box { position: relative; margin-top: 20px; margin-bottom: 30px; }
+    #cheat-sheet-area { width: 100%; height: 350px; background: var(--bg-start); color: var(--accent-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; font-family: monospace; font-size: 14px; resize: vertical; box-sizing: border-box; outline: none; }
+    #btn-copy-cheat { position: absolute; top: 15px; right: 15px; background: var(--color-success); color: #fff; height: 35px; padding: 0 15px; border: none; border-radius: var(--radius-md); font-weight: bold; cursor: pointer; transition: 0.2s; }
+    #btn-copy-cheat:hover { opacity: 0.8; }
+    
+    .mode-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
+    .badge-md { background: rgba(47, 129, 247, 0.15); color: var(--accent-primary); border: 1px solid var(--accent-primary); }
+    .badge-html { background: rgba(210, 153, 34, 0.15); color: var(--color-warning); border: 1px solid var(--color-warning); }
+</style>
+</head>
+<body>
+
+<div class="container" style="max-width: 900px;">
+
+    <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="notes.html" class="header-btn" style="text-decoration: none;">⬅ Back to Notes</a>
+            <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📝 Dev Notes Guide</span>
+        </div>
+        
+        <div class="header-actions">
+            <div class="dropdown-wrapper">
+                <button class="header-btn" style="border-color: var(--accent-primary); color: var(--accent-primary); cursor: default;">🧭 Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="index.html" class="dropdown-link">🏠 Main Suite</a>
+                    <a href="workspace.html" class="dropdown-link">💻 Code Workspace</a>
+                    <a href="editor.html" class="dropdown-link">⚖️ Diff Editor</a>
+                    <a href="scraper.html" class="dropdown-link">🕸️ Data Scraper</a>
+                    <a href="notes.html" class="dropdown-link">📝 Dev Notes</a>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" class="header-btn">🌙 Mode</button>
+        </div>
+    </div>
+
+    <div class="guide-content">
+        <h1 style="margin-top: 0; color: var(--text-primary);">Mastering Dev Notes</h1>
+        <p>Dev Notes is a dual-engine documentation tool. It can instantly render your code into HTML, or work in reverse to extract clean Markdown out of messy MS Word documents and websites. <strong>Click the 🔄 Swap button in the top toolbar to switch modes and seamlessly transfer your work.</strong></p>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+        <h2><span class="mode-badge badge-md">Mode 1</span> Standard Markdown Editor</h2>
+        <p>Use the standard mode (MD ➔ HTML) to write your documentation from scratch. Type your raw Markdown on the left, and watch it turn into beautiful HTML on the right.</p>
+
+        <h3>⚡ Quick Start: The Cheat Sheet</h3>
+        <p>Click the <strong>Copy Cheat Sheet</strong> button below, open Dev Notes, and paste it into the left panel to see exactly how everything renders!</p>
+        
+        <div class="cheat-sheet-box">
+            <button id="btn-copy-cheat">📋 Copy Cheat Sheet</button>
+            <textarea id="cheat-sheet-area" spellcheck="false" readonly>
+# Welcome to Dev Notes! 🚀
+This is an `h1` heading. You use hashes to make headings.
+
+## This is an h2
+### This is an h3
+
+---
+
+## 📝 Basic Formatting
+It is incredibly easy to make text **bold**, *italic*, or ***both***.
+You can also use ~~strikethrough~~ if you need to.
+
+## 📋 Lists
+Here is an unordered list of tasks:
+* Build Code Editor
+* Build Data Scraper
+* Build Dev Notes
+
+Here is an ordered list:
+1. Copy this text
+2. Paste it in the left panel
+3. Watch it render on the right!
+
+## 💻 Code Blocks
+You can write inline code like `const x = 10;` or create full, multi-line code blocks for your documentation:
+
+&#96;&#96;&#96;javascript
+function greetUser(name) {
+    console.log(`Hello, ${name}! Your offline suite is awesome.`);
+}
+&#96;&#96;&#96;
+
+## 🔗 Links and Quotes
+Need to save a link? [Click here for the Markdown Guide](https://www.markdownguide.org).
+
+> "This is a blockquote. It's great for emphasizing important notes, warnings, or quotes from documentation."
+            </textarea>
+        </div>
+
+        <h3>📖 Syntax Reference Guide</h3>
+        <table>
+            <tr>
+                <th>Element</th>
+                <th>What you type (Markdown)</th>
+                <th>What you get (HTML)</th>
+            </tr>
+            <tr>
+                <td>Headers</td>
+                <td><code># Big Header<br>## Smaller Header</code></td>
+                <td><h1 style="margin:0;">H1</h1><h2 style="margin:0;">H2</h2></td>
+            </tr>
+            <tr>
+                <td>Emphasis</td>
+                <td><code>**Bold text**</code><br><code>*Italic text*</code></td>
+                <td><strong>Bold text</strong><br><em>Italic text</em></td>
+            </tr>
+            <tr>
+                <td>Lists</td>
+                <td><code>- Item 1<br>- Item 2</code></td>
+                <td><ul style="margin:0;"><li style="margin:0;">Item 1</li><li style="margin:0;">Item 2</li></ul></td>
+            </tr>
+            <tr>
+                <td>Links</td>
+                <td><code>[Google](https://google.com)</code></td>
+                <td><a href="#" style="color: var(--accent-primary);">Google</a></td>
+            </tr>
+            <tr>
+                <td>Blockquote</td>
+                <td><code>> This is important!</code></td>
+                <td><blockquote style="margin:0; border-left: 3px solid var(--accent-primary); padding-left: 10px;">This is important!</blockquote></td>
+            </tr>
+        </table>
+
+        <!-- 🚀 RESTORED SECTIONS -->
+        <h3>💻 Writing Code Blocks (Important!)</h3>
+        <p>Since you are building a developer suite, you will frequently need to save blocks of code. To do this, you use <strong>triple backticks</strong> (the key usually above the Tab key: <code>`</code>).</p>
+        
+        <h4>Inline Code</h4>
+        <p>For a quick variable name, wrap it in single backticks: <br> <code>`const myVar = 10;`</code> becomes <code>const myVar = 10;</code></p>
+
+        <h4>Multi-line Code Blocks</h4>
+        <p>To write a full block of code, you must explicitly <strong>open</strong> and <strong>close</strong> the block.</p>
+        <ol>
+            <li>Type three backticks followed by the language name (e.g., <code>&#96;&#96;&#96;javascript</code>).</li>
+            <li>Press <span class="keyboard-key">Enter</span> and paste your code.</li>
+            <li>Press <span class="keyboard-key">Enter</span> again and type three backticks <code>&#96;&#96;&#96;</code> alone on the final line to <strong>close</strong> the block!</li>
+        </ol>
+
+        <h3>🛠️ Toolbar & Autosave</h3>
+        <ul>
+            <li><span style="color: var(--color-success); font-weight: bold;">💾 Download .MD:</span> Downloads your raw text exactly as you typed it. Perfect for pushing to GitHub.</li>
+            <li><span style="color: var(--accent-primary); font-weight: bold;">📋 Copy as HTML:</span> Copies the <em>rendered preview</em>. If you paste this into an email or a WordPress blog, it keeps all your bolding, lists, and code blocks perfectly formatted!</li>
+            <li><span style="color: var(--color-warning); font-weight: bold;">✔️ Autosave Enabled:</span> Every time you press a key, your progress is saved to your browser's offline <code>localStorage</code>. If you accidentally close the tab, open it again and your text will be waiting for you.</li>
+        </ul>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <a href="notes.html"><button style="background: var(--accent-primary); color: var(--surface-dark); font-size: 16px; padding: 0 25px; height: 50px; border-radius: var(--radius-md); border: none; font-weight: bold; cursor: pointer;">Launch Dev Notes & Paste It! 🚀</button></a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+        <h2><span class="mode-badge badge-html">Mode 2</span> The Reverse Converter (Word/HTML to Markdown)</h2>
+        <p>If you have existing documentation in a Microsoft Word file, a Google Doc, or an old website, click the central 🔄 button to swap to Converter Mode. You don't need to rewrite anything in Markdown manually.</p>
+        
+        <ul>
+            <li><strong>Importing MS Word:</strong> Click <code>📂 Import .DOCX / .HTML</code>. The internal engine will automatically unzip the Word document, extract the text, and map the formatting (Headings, Bold, Lists, Tables) directly into pure Markdown on the right.</li>
+            <li><strong>Rich Text Pasting:</strong> Alternatively, copy text directly from Wikipedia or a Word document and paste it into the left panel. The content-editable workspace retains the visual layout while the engine writes the Markdown for you seamlessly.</li>
+            <li><strong>Raw HTML:</strong> You can also paste raw HTML source code (e.g., <code>&lt;div&gt;Hello&lt;/div&gt;</code>). The tool will parse the DOM elements and strip away the tags, leaving only clean Markdown syntax.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    document.getElementById('btn-copy-cheat').onclick = (e) => {
+        const text = document.getElementById('cheat-sheet-area').value;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = e.target;
+            const orig = btn.innerHTML;
+            btn.innerHTML = "✔✔ Copied! Now Paste It!";
+            setTimeout(() => btn.innerHTML = orig, 2500);
+        });
+    };
+
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const htmlTag = document.documentElement;
+    const savedTheme = localStorage.getItem('app_theme');
+    if (savedTheme === 'light') { htmlTag.setAttribute('data-theme', 'light'); if (themeBtn) themeBtn.textContent = '☀️ Mode'; }
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            if (currentTheme === 'light') { htmlTag.removeAttribute('data-theme'); localStorage.setItem('app_theme', 'dark'); themeBtn.textContent = '🌙 Mode'; } 
+            else { htmlTag.setAttribute('data-theme', 'light'); localStorage.setItem('app_theme', 'light'); themeBtn.textContent = '☀️ Mode'; }
+        };
+    }
+</script>
+</body>
+</html>
