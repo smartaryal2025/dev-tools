@@ -21,11 +21,14 @@
     th, td { padding: 12px; border: 1px solid var(--border-color); text-align: left; }
     th { background: var(--surface-light); color: var(--text-primary); }
 
-    /* Cheat Sheet Copy Box */
     .cheat-sheet-box { position: relative; margin-top: 20px; margin-bottom: 30px; }
     #cheat-sheet-area { width: 100%; height: 350px; background: var(--bg-start); color: var(--accent-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; font-family: monospace; font-size: 14px; resize: vertical; box-sizing: border-box; outline: none; }
     #btn-copy-cheat { position: absolute; top: 15px; right: 15px; background: var(--color-success); color: #fff; height: 35px; padding: 0 15px; border: none; border-radius: var(--radius-md); font-weight: bold; cursor: pointer; transition: 0.2s; }
     #btn-copy-cheat:hover { opacity: 0.8; }
+    
+    .mode-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
+    .badge-md { background: rgba(47, 129, 247, 0.15); color: var(--accent-primary); border: 1px solid var(--accent-primary); }
+    .badge-html { background: rgba(210, 153, 34, 0.15); color: var(--color-warning); border: 1px solid var(--color-warning); }
 </style>
 </head>
 <body>
@@ -34,6 +37,7 @@
 
     <div class="app-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
         <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="notes.html" class="header-btn" style="text-decoration: none;">⬅ Back to Notes</a>
             <span style="font-size: 24px; font-weight: bold; color: var(--text-primary);">📝 Dev Notes Guide</span>
         </div>
         
@@ -54,10 +58,15 @@
 
     <div class="guide-content">
         <h1 style="margin-top: 0; color: var(--text-primary);">Mastering Dev Notes</h1>
-        <p>Dev Notes is a blazing-fast, offline documentation tool. It uses <strong>Markdown</strong> to format text instantly. Type your raw Markdown on the left, and watch it turn into beautiful HTML on the right.</p>
+        <p>Dev Notes is a dual-engine documentation tool. It can instantly render your code into HTML, or work in reverse to extract clean Markdown out of messy MS Word documents and websites. <strong>Click the 🔄 Swap button in the top toolbar to switch modes and seamlessly transfer your work.</strong></p>
 
-        <h2>⚡ Quick Start: The Cheat Sheet</h2>
-        <p>The fastest way to learn is by doing. Click the <strong>Copy Cheat Sheet</strong> button below, open your Dev Notes tool, and paste it into the left panel to see exactly how everything renders!</p>
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+        <h2><span class="mode-badge badge-md">Mode 1</span> Standard Markdown Editor</h2>
+        <p>Use the standard mode (MD ➔ HTML) to write your documentation from scratch. Type your raw Markdown on the left, and watch it turn into beautiful HTML on the right.</p>
+
+        <h3>⚡ Quick Start: The Cheat Sheet</h3>
+        <p>Click the <strong>Copy Cheat Sheet</strong> button below, open Dev Notes, and paste it into the left panel to see exactly how everything renders!</p>
         
         <div class="cheat-sheet-box">
             <button id="btn-copy-cheat">📋 Copy Cheat Sheet</button>
@@ -101,12 +110,7 @@ Need to save a link? [Click here for the Markdown Guide](https://www.markdowngui
             </textarea>
         </div>
 
-        <div style="text-align: center; margin-bottom: 50px;">
-            <a href="notes.html"><button style="background: var(--accent-primary); color: var(--surface-dark); font-size: 16px; padding: 0 25px; height: 50px; border-radius: var(--radius-md); border: none; font-weight: bold; cursor: pointer;">Launch Dev Notes & Paste It! 🚀</button></a>
-        </div>
-
-        <h2>📖 Syntax Reference Guide</h2>
-        
+        <h3>📖 Syntax Reference Guide</h3>
         <table>
             <tr>
                 <th>Element</th>
@@ -140,40 +144,46 @@ Need to save a link? [Click here for the Markdown Guide](https://www.markdowngui
             </tr>
         </table>
 
-        <h2>💻 Writing Code Blocks (Important!)</h2>
+        <!-- 🚀 RESTORED SECTIONS -->
+        <h3>💻 Writing Code Blocks (Important!)</h3>
         <p>Since you are building a developer suite, you will frequently need to save blocks of code. To do this, you use <strong>triple backticks</strong> (the key usually above the Tab key: <code>`</code>).</p>
         
-        <h3>Inline Code</h3>
+        <h4>Inline Code</h4>
         <p>For a quick variable name, wrap it in single backticks: <br> <code>`const myVar = 10;`</code> becomes <code>const myVar = 10;</code></p>
 
-        <h3>Multi-line Code Blocks</h3>
+        <h4>Multi-line Code Blocks</h4>
         <p>To write a full block of code, you must explicitly <strong>open</strong> and <strong>close</strong> the block.</p>
         <ol>
-            <li>Type three backticks followed by the language name (e.g., <code>&#96;&#96;&#96;javascript</code> or <code>&#96;&#96;&#96;html</code>).</li>
+            <li>Type three backticks followed by the language name (e.g., <code>&#96;&#96;&#96;javascript</code>).</li>
             <li>Press <span class="keyboard-key">Enter</span> and paste your code.</li>
             <li>Press <span class="keyboard-key">Enter</span> again and type three backticks <code>&#96;&#96;&#96;</code> alone on the final line to <strong>close</strong> the block!</li>
         </ol>
 
-        <p><strong>Example of a properly closed block:</strong></p>
-<pre><code>&#96;&#96;&#96;javascript
-function calculateTotal(price) {
-    return price * 1.2;
-}
-&#96;&#96;&#96;</code></pre>
-
-        <h2>🛠️ Toolbar & Autosave</h2>
+        <h3>🛠️ Toolbar & Autosave</h3>
         <ul>
-            <li><span style="color: var(--color-success); font-weight: bold;">💾 Save .md File:</span> Downloads your raw text exactly as you typed it. Perfect for pushing to GitHub.</li>
+            <li><span style="color: var(--color-success); font-weight: bold;">💾 Download .MD:</span> Downloads your raw text exactly as you typed it. Perfect for pushing to GitHub.</li>
             <li><span style="color: var(--accent-primary); font-weight: bold;">📋 Copy as HTML:</span> Copies the <em>rendered preview</em>. If you paste this into an email or a WordPress blog, it keeps all your bolding, lists, and code blocks perfectly formatted!</li>
-            <li><span style="color: var(--text-primary); font-weight: bold;">✔️ Autosave Vault:</span> Every time you press a key, your progress is saved to your browser's offline <code>localStorage</code>. If you accidentally close the tab, open it again and your text will be waiting for you.</li>
+            <li><span style="color: var(--color-warning); font-weight: bold;">✔️ Autosave Enabled:</span> Every time you press a key, your progress is saved to your browser's offline <code>localStorage</code>. If you accidentally close the tab, open it again and your text will be waiting for you.</li>
         </ul>
 
-    </div>
+        <div style="text-align: center; margin: 50px 0;">
+            <a href="notes.html"><button style="background: var(--accent-primary); color: var(--surface-dark); font-size: 16px; padding: 0 25px; height: 50px; border-radius: var(--radius-md); border: none; font-weight: bold; cursor: pointer;">Launch Dev Notes & Paste It! 🚀</button></a>
+        </div>
 
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+        <h2><span class="mode-badge badge-html">Mode 2</span> The Reverse Converter (Word/HTML to Markdown)</h2>
+        <p>If you have existing documentation in a Microsoft Word file, a Google Doc, or an old website, click the central 🔄 button to swap to Converter Mode. You don't need to rewrite anything in Markdown manually.</p>
+        
+        <ul>
+            <li><strong>Importing MS Word:</strong> Click <code>📂 Import .DOCX / .HTML</code>. The internal engine will automatically unzip the Word document, extract the text, and map the formatting (Headings, Bold, Lists, Tables) directly into pure Markdown on the right.</li>
+            <li><strong>Rich Text Pasting:</strong> Alternatively, copy text directly from Wikipedia or a Word document and paste it into the left panel. The content-editable workspace retains the visual layout while the engine writes the Markdown for you seamlessly.</li>
+            <li><strong>Raw HTML:</strong> You can also paste raw HTML source code (e.g., <code>&lt;div&gt;Hello&lt;/div&gt;</code>). The tool will parse the DOM elements and strip away the tags, leaving only clean Markdown syntax.</li>
+        </ul>
+    </div>
 </div>
 
 <script>
-    // Copy Cheat Sheet Logic
     document.getElementById('btn-copy-cheat').onclick = (e) => {
         const text = document.getElementById('cheat-sheet-area').value;
         navigator.clipboard.writeText(text).then(() => {
@@ -184,7 +194,6 @@ function calculateTotal(price) {
         });
     };
 
-    // Theme Memory Logic
     const themeBtn = document.getElementById('theme-toggle-btn');
     const htmlTag = document.documentElement;
     const savedTheme = localStorage.getItem('app_theme');
