@@ -10,19 +10,31 @@
     html, body { margin: 0; background: var(--bg-end); height: 100vh; overflow: hidden; }
     .workspace-container { display: flex; flex-direction: column; height: 100vh; padding: 20px; box-sizing: border-box; width: 100%; }
     
-    /* 🚀 REFINED TOOLBAR LAYOUT */
-    .editor-toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; background: var(--surface-dark); padding: 12px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
-    .toolbar-status-row { display: flex; justify-content: space-between; width: 100%; align-items: center; }
-    .toolbar-action-row { display: flex; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 10px; }
-    .toolbar-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .editor-toolbar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; background: var(--surface-dark); padding: 12px 15px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+    .toolbar-row { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; align-items: center; justify-content: space-between; }
+    .toolbar-actions { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; align-items: center; }
     
     .editor-toolbar button { white-space: nowrap; flex-shrink: 0; min-height: 36px; padding: 0 15px; } 
+    
+    .btn-swap { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-light); border: 1px solid var(--border-color); font-size: 18px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: var(--text-primary); display: flex; align-items: center; justify-content: center; padding: 0 !important; }
+    .btn-swap:hover { transform: scale(1.1); border-color: var(--accent-primary); color: var(--accent-primary); }
 
-    /* 🚀 FLOATING SWAP BUTTON (Saves Layout Space) */
+    /* 🚀 NEW: Pulsing Glow Indicator Styling */
+    .btn-sync { background: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 12px; font-weight: bold; cursor: pointer; padding: 4px 10px; transition: all 0.2s; min-height: 28px !important; display: inline-flex; align-items: center; gap: 6px; }
+    .glow-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    
+    @keyframes pulse-green { 0% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); } 50% { box-shadow: 0 0 12px rgba(34, 197, 94, 1); } 100% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); } }
+    @keyframes pulse-red { 0% { box-shadow: 0 0 4px rgba(248, 81, 73, 0.4); } 50% { box-shadow: 0 0 12px rgba(248, 81, 73, 1); } 100% { box-shadow: 0 0 4px rgba(248, 81, 73, 0.4); } }
+    
+    .btn-sync.on { border-color: var(--color-success); color: var(--color-success); }
+    .btn-sync.on .glow-dot { background-color: var(--color-success); animation: pulse-green 2s infinite; }
+    
+    .btn-sync.off { border-color: var(--color-danger); color: var(--color-danger); }
+    .btn-sync.off .glow-dot { background-color: var(--color-danger); animation: pulse-red 2s infinite; }
+
     .modern-split-grid { flex-grow: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-height: 0; align-items: stretch; position: relative; }
     
-    .btn-swap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; width: 42px; height: 42px; border-radius: 50%; background: var(--surface-light); border: 1px solid var(--border-color); font-size: 18px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.25); color: var(--text-primary); display: flex; align-items: center; justify-content: center; padding: 0 !important; }
-    .btn-swap:hover { transform: translate(-50%, -50%) scale(1.1); border-color: var(--accent-primary); color: var(--accent-primary); }
+    .btn-swap-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; }
 
     .grid-col { display: flex; flex-direction: column; min-height: 0; min-width: 0; height: 100%; }
     .code-area, .preview-area { flex-grow: 1; width: 100%; margin: 0; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--surface-dark); overflow-y: auto; font-family: monospace; font-size: 13px; color: var(--text-primary); outline: none; box-sizing: border-box; resize: none; }
@@ -32,7 +44,6 @@
     .preview-area code { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--color-warning); }
     .preview-area pre { background: #000; padding: 15px; border-radius: 8px; overflow-x: auto; color: #fff; }
     
-    /* Bulletproof Table CSS */
     .preview-area table { width: 100%; border-collapse: collapse; margin: 15px 0; }
     .preview-area th, .preview-area td { padding: 10px; border: 1px solid var(--border-color); vertical-align: middle !important; text-align: left; }
     .preview-area th { background: var(--surface-dark); font-weight: bold; }
@@ -40,14 +51,14 @@
     
     #rich-input:empty:before { content: attr(placeholder); color: var(--text-secondary); pointer-events: none; display: block; }
 
-    /* Mobile overrides */
     @media screen and (max-width: 768px) {
         html, body { overflow: auto; height: auto; }
         .workspace-container { height: auto; }
         .modern-split-grid { display: flex; flex-direction: column; gap: 24px; }
-        .code-area, .preview-area { min-height: 400px; }
-        .btn-swap { transform: translate(-50%, -50%) rotate(90deg); } /* Rotates arrow on mobile */
-        .btn-swap:hover { transform: translate(-50%, -50%) rotate(90deg) scale(1.1); }
+        /* 🚀 FIXED: Mobile Scroll Enablement */
+        .code-area, .preview-area { height: 400px; min-height: 400px; flex-grow: 0; } 
+        .btn-swap-wrapper { transform: translate(-50%, -50%) rotate(90deg); } 
+        .toolbar-status-row { flex-direction: column; gap: 10px; align-items: flex-start; }
     }
 </style>
 </head>
@@ -74,46 +85,38 @@
         </div>
     </div>
 
-    <!-- REFINED SPLIT TOOLBAR -->
     <div class="editor-toolbar">
         <input type="file" id="file-input" style="display: none;" accept=".md,.txt,.docx,.html,.htm">
         
-        <!-- Status Info Row -->
-        <div class="toolbar-status-row">
+        <div class="toolbar-row toolbar-status-row">
             <span id="mode-status" style="font-size: 14px; font-weight: bold; color: var(--accent-primary);">Mode: Markdown ➔ HTML</span>
-            <span style="font-size: 13px; color: var(--color-warning);">Live Auto-Save Enabled</span>
-        </div>
-
-        <!-- Mode 1 Actions -->
-        <div id="toolbar-mode1" class="toolbar-action-row">
-            <div class="toolbar-group">
-                <button id="btn-open-md" style="border-color: var(--border-color);">📂 Open .MD / .TXT</button>
-                <button id="btn-save-md" style="color: var(--color-success); border-color: rgba(35, 134, 54, 0.4);">💾 Download .MD</button>
-            </div>
-            <div class="toolbar-group">
-                <button id="btn-copy-html" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4);">📋 Copy HTML Preview</button>
-                <button id="btn-clear-1" class="btn-clear">🗑️ Clear</button>
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <button id="btn-sync-scroll" class="btn-sync on"><span class="glow-dot"></span> Synced Scroll: ON</button>
+                <span style="font-size: 13px; color: var(--color-warning);">Live Auto-Save Enabled</span>
             </div>
         </div>
 
-        <!-- Mode 2 Actions -->
-        <div id="toolbar-mode2" class="toolbar-action-row" style="display: none;">
-            <div class="toolbar-group">
-                <button id="btn-open-rich" style="border-color: var(--border-color);">📂 Import .DOCX / .HTML</button>
-                <button id="btn-save-converted" style="color: var(--color-warning); border-color: rgba(210, 153, 34, 0.4);">💾 Download Converted .MD</button>
-            </div>
-            <div class="toolbar-group">
-                <button id="btn-copy-md" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4);">📋 Copy Markdown Code</button>
-                <button id="btn-clear-2" class="btn-clear">🗑️ Clear</button>
-            </div>
+        <div style="width: 100%; height: 1px; background: var(--border-color); margin: 2px 0;"></div>
+
+        <div id="toolbar-mode1" class="toolbar-actions">
+            <button id="btn-open-md" style="border-color: var(--border-color);">📂 Open .MD / .TXT</button>
+            <button id="btn-save-md" style="color: var(--color-success); border-color: rgba(35, 134, 54, 0.4);">💾 Download .MD</button>
+            <button id="btn-copy-html" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4); margin-left: auto;">📋 Copy HTML Preview</button>
+            <button id="btn-clear-1" class="btn-clear">🗑️ Clear</button>
+        </div>
+
+        <div id="toolbar-mode2" class="toolbar-actions" style="display: none;">
+            <button id="btn-open-rich" style="border-color: var(--border-color);">📂 Import .DOCX / .HTML</button>
+            <button id="btn-save-converted" style="color: var(--color-warning); border-color: rgba(210, 153, 34, 0.4);">💾 Download Converted .MD</button>
+            <button id="btn-copy-md" style="color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4); margin-left: auto;">📋 Copy Markdown Code</button>
+            <button id="btn-clear-2" class="btn-clear">🗑️ Clear</button>
         </div>
     </div>
 
-    <!-- DUAL WINDOWS WITH FLOATING BUTTON -->
     <div class="modern-split-grid">
-        
-        <!-- Center Floating Swap Button -->
-        <button id="btn-swap-mode" class="btn-swap" title="Swap Conversion Mode">🔄</button>
+        <div class="btn-swap-wrapper">
+            <button id="btn-swap-mode" class="btn-swap" title="Swap Conversion Mode">🔄</button>
+        </div>
 
         <div class="grid-col">
             <textarea id="notes-input" class="code-area" placeholder="# Enter Markdown Here..."></textarea>
@@ -140,6 +143,7 @@
     const mdOutput = document.getElementById('md-output');
     const fileInput = document.getElementById('file-input');
     const modeStatus = document.getElementById('mode-status');
+    const btnSyncScroll = document.getElementById('btn-sync-scroll');
     
     const turndownService = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', emDelimiter: '*' });
     turndownService.use(turndownPluginGfm.gfm);
@@ -147,11 +151,38 @@
 
     let currentMode = 'md2html';
 
+    // 🚀 SYNC SCROLL LOGIC
+    let isSyncEnabled = true;
+    let syncLock = false;
+
+    btnSyncScroll.onclick = () => {
+        isSyncEnabled = !isSyncEnabled;
+        if(isSyncEnabled) {
+            btnSyncScroll.className = 'btn-sync on';
+            btnSyncScroll.innerHTML = '<span class="glow-dot"></span> Synced Scroll: ON';
+        } else {
+            btnSyncScroll.className = 'btn-sync off';
+            btnSyncScroll.innerHTML = '<span class="glow-dot"></span> Synced Scroll: OFF';
+        }
+    };
+
+    function doSync(source, target) {
+        if(!isSyncEnabled || syncLock) return;
+        syncLock = true;
+        const percentage = source.scrollTop / (source.scrollHeight - source.clientHeight) || 0;
+        target.scrollTop = percentage * (target.scrollHeight - target.clientHeight);
+        setTimeout(() => syncLock = false, 20); 
+    }
+
+    mdInput.addEventListener('scroll', () => doSync(mdInput, htmlPreview));
+    htmlPreview.addEventListener('scroll', () => doSync(htmlPreview, mdInput));
+    richInput.addEventListener('scroll', () => doSync(richInput, mdOutput));
+    mdOutput.addEventListener('scroll', () => doSync(mdOutput, richInput));
+
     // 🚀 SWAP MODE LOGIC
     document.getElementById('btn-swap-mode').onclick = () => {
         if (currentMode === 'md2html') {
             currentMode = 'html2md';
-            
             richInput.innerHTML = htmlPreview.innerHTML;
             mdOutput.value = mdInput.value;
             
@@ -166,10 +197,8 @@
             modeStatus.innerHTML = 'Mode: HTML/Word ➔ Markdown';
             modeStatus.style.color = 'var(--color-warning)';
             fileInput.accept = ".docx,.html,.htm,.md,.txt";
-            
         } else {
             currentMode = 'md2html';
-            
             mdInput.value = mdOutput.value;
             htmlPreview.innerHTML = richInput.innerHTML;
             
@@ -208,7 +237,6 @@
 
     const savedRich = localStorage.getItem('dev_notes_rich');
     if (savedRich) { richInput.innerHTML = savedRich; convertRichToMd(); }
-
     richInput.addEventListener('input', convertRichToMd);
 
     // 🚀 MS WORD PASTE SANITIZER
@@ -216,13 +244,11 @@
         const htmlData = (e.clipboardData || window.clipboardData).getData('text/html');
         if (htmlData) {
             e.preventDefault();
-            
             let cleanHtml = htmlData
                 .replace(/<!--[\s\S]*?-->/g, '')
                 .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
                 .replace(/<meta[^>]*>/gi, '')
                 .replace(/<link[^>]*>/gi, '');
-
             document.execCommand('insertHTML', false, cleanHtml);
             convertRichToMd();
         }
@@ -266,7 +292,6 @@
     // Buttons
     document.getElementById('btn-clear-1').onclick = () => { if(confirm("Clear Markdown notes?")) { mdInput.value = ''; htmlPreview.innerHTML = ''; localStorage.removeItem('dev_notes_md'); }};
     document.getElementById('btn-clear-2').onclick = () => { if(confirm("Clear converter workspace?")) { richInput.innerHTML = ''; mdOutput.value = ''; localStorage.removeItem('dev_notes_rich'); }};
-
     document.getElementById('btn-save-md').onclick = () => triggerDownload(mdInput.value, 'note.md');
     document.getElementById('btn-save-converted').onclick = () => triggerDownload(mdOutput.value, 'converted_note.md');
 
